@@ -238,4 +238,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get chooseStream => 'اختر المسلك';
+
+  @override
+  String get failedToLoadStreams => 'فشل في تحميل المسالك';
+
+  @override
+  String get noStreamsAvailable => 'لا توجد مسالك متاحة بعد';
+
+  @override
+  String get streamsAppearHere => 'ستظهر المسالك هنا بمجرد إضافتها.';
 }

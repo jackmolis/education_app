@@ -12,17 +12,19 @@ class LevelSubjectsScreen extends ConsumerWidget {
   final String levelId;
   final String levelName;
   final String? streamId;
+  final String? optionLang;
 
   const LevelSubjectsScreen({
     super.key,
     required this.levelId,
     required this.levelName,
     this.streamId,
+    this.optionLang,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final subjectsAsync = ref.watch(subjectsByLevelProvider((levelId: levelId, streamId: streamId)));
+    final subjectsAsync = ref.watch(subjectsByLevelProvider((levelId: levelId, streamId: streamId, optionLang: optionLang)));
     final locale = ref.watch(localeProvider);
     final loc = AppLocalizations.of(context)!;
 
@@ -72,9 +74,9 @@ class LevelSubjectsScreen extends ConsumerWidget {
                       title: loc.failedToLoadSubjects,
                       actionLabel: loc.tryAgain,
                       onAction: () async {
-                        ref.invalidate(subjectsByLevelProvider((levelId: levelId, streamId: streamId)));
+                        ref.invalidate(subjectsByLevelProvider((levelId: levelId, streamId: streamId, optionLang: optionLang)));
                         try {
-                          await ref.read(subjectsByLevelProvider((levelId: levelId, streamId: streamId)).future);
+                          await ref.read(subjectsByLevelProvider((levelId: levelId, streamId: streamId, optionLang: optionLang)).future);
                         } catch (_) {}
                       },
                     ),
@@ -85,9 +87,9 @@ class LevelSubjectsScreen extends ConsumerWidget {
                 return RefreshIndicator(
                   color: const Color(0xFF4A6CF7),
                   onRefresh: () async {
-                    ref.invalidate(subjectsByLevelProvider((levelId: levelId, streamId: streamId)));
+                    ref.invalidate(subjectsByLevelProvider((levelId: levelId, streamId: streamId, optionLang: optionLang)));
                     try {
-                      await ref.read(subjectsByLevelProvider((levelId: levelId, streamId: streamId)).future);
+                      await ref.read(subjectsByLevelProvider((levelId: levelId, streamId: streamId, optionLang: optionLang)).future);
                     } catch (_) {}
                   },
                   child: subjects.isEmpty
@@ -104,9 +106,9 @@ class LevelSubjectsScreen extends ConsumerWidget {
                                 subtitle: loc.subjectsAppearHere,
                                 actionLabel: loc.refresh,
                                 onAction: () async {
-                                  ref.invalidate(subjectsByLevelProvider((levelId: levelId, streamId: streamId)));
+                                  ref.invalidate(subjectsByLevelProvider((levelId: levelId, streamId: streamId, optionLang: optionLang)));
                                   try {
-                                    await ref.read(subjectsByLevelProvider((levelId: levelId, streamId: streamId)).future);
+                                    await ref.read(subjectsByLevelProvider((levelId: levelId, streamId: streamId, optionLang: optionLang)).future);
                                   } catch (_) {}
                                 },
                               ),

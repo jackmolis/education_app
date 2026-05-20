@@ -29,6 +29,8 @@ import '../../features/courses/presentation/screens/primary_levels_screen.dart';
 import '../../features/courses/presentation/screens/middle_levels_screen.dart';
 import '../../features/courses/presentation/screens/high_levels_screen.dart';
 import '../../features/streams/presentation/screens/streams_screen.dart';
+import '../../features/streams/presentation/screens/stream_selection_screen.dart';
+import '../../features/courses/presentation/screens/option_selection_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateChangesProvider);
@@ -106,6 +108,36 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   );
                 },
               ),
+              // High School Level → Stream Selection Screen
+              GoRoute(
+                path: '/stream-selection',
+                builder: (context, state) {
+                  final extra = state.extra as Map<String, dynamic>? ?? {};
+                  final levelId = extra['levelId'] as String? ?? '';
+                  final levelName = extra['levelName'] as String? ?? '';
+                  return StreamSelectionScreen(
+                    key: state.pageKey,
+                    levelId: levelId,
+                    levelName: levelName,
+                  );
+                },
+              ),
+              // Level → Option Selection Screen
+              GoRoute(
+                path: '/option-selection',
+                builder: (context, state) {
+                  final extra = state.extra as Map<String, dynamic>? ?? {};
+                  final levelId = extra['levelId'] as String? ?? '';
+                  final levelName = extra['levelName'] as String? ?? '';
+                  final streamId = extra['streamId'] as String?;
+                  return OptionSelectionScreen(
+                    key: state.pageKey,
+                    levelId: levelId,
+                    levelName: levelName,
+                    streamId: streamId,
+                  );
+                },
+              ),
               // Level → Streams → Subjects screen
               GoRoute(
                 path: '/level-subjects',
@@ -114,11 +146,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   final levelId = extra['levelId'] as String? ?? '';
                   final levelName = extra['levelName'] as String? ?? 'Subjects';
                   final streamId = extra['streamId'] as String?;
+                  final optionLang = extra['optionLang'] as String?;
                   return LevelSubjectsScreen(
                     key: state.pageKey,
                     levelId: levelId,
                     levelName: levelName,
                     streamId: streamId,
+                    optionLang: optionLang,
                   );
                 },
               ),

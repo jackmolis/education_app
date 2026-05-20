@@ -27,9 +27,9 @@ class SubjectsRepository {
     }
   }
 
-  Future<List<SubjectModel>> getSubjectsByLevel(String rawLevelId, {String? streamId}) async {
+  Future<List<SubjectModel>> getSubjectsByLevel(String rawLevelId, {String? streamId, String? optionLang}) async {
     final levelId = _mapLevelId(rawLevelId);
-    print("LEVEL ID = $levelId, STREAM ID = $streamId");
+    print("LEVEL ID = $levelId, STREAM ID = $streamId, OPTION_LANG = $optionLang");
     print('DEBUG getSubjectsByLevel: filtering subjects where level_id = "$levelId"');
     
     try {
@@ -39,6 +39,12 @@ class SubjectsRepository {
         query = query.eq('stream_id', streamId);
       } else {
         query = query.eq('level_id', levelId)..filter('stream_id', 'is', null);
+      }
+
+      if (optionLang != null) {
+        query = query.or(
+          'option_lang.eq.$optionLang,option_lang.is.null',
+        );
       }
       
       final response = await query;

@@ -82,6 +82,9 @@
     "optionArabic": "Arabic Option",
     "optionFrenchDesc": "Study in French",
     "optionArabicDesc": "Study in Arabic",
-  "chooseStream": "Choose Stream"
+  "chooseStream": "Choose Stream",
+  "failedToLoadStreams": "Failed to load streams",
+  "noStreamsAvailable": "No streams available yet",
+  "streamsAppearHere": "Streams will appear here once they are added."
 }
 

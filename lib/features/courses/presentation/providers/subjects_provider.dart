@@ -9,7 +9,7 @@ final levelsProvider = FutureProvider<List<LevelModel>>((ref) async {
   return (response as List).map((json) => LevelModel.fromJson(json as Map<String, dynamic>)).toList();
 });
 
-typedef SubjectsQueryArgs = ({String levelId, String? streamId});
+typedef SubjectsQueryArgs = ({String levelId, String? streamId, String? optionLang});
 typedef OptionsQueryArgs = ({String levelId, String? streamId});
 final optionsByLevelProvider =
 FutureProvider.family<List<String>, OptionsQueryArgs>((ref, args) async {
@@ -41,5 +41,5 @@ FutureProvider.family<List<String>, OptionsQueryArgs>((ref, args) async {
 final subjectsByLevelProvider =
     FutureProvider.family<List<SubjectModel>, SubjectsQueryArgs>((ref, args) async {
   final repository = ref.read(subjectsRepositoryProvider);
-  return repository.getSubjectsByLevel(args.levelId, streamId: args.streamId);
+  return repository.getSubjectsByLevel(args.levelId, streamId: args.streamId, optionLang: args.optionLang);
 });

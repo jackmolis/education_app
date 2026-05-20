@@ -81,5 +81,8 @@
     "optionArabic": "المسار العربي",
     "optionFrenchDesc": "الدراسة باللغة الفرنسية",
     "optionArabicDesc": "الدراسة باللغة العربية",
-  "chooseStream": "اختر المسلك"
+  "chooseStream": "اختر المسلك",
+  "failedToLoadStreams": "فشل في تحميل المسالك",
+  "noStreamsAvailable": "لا توجد مسالك متاحة بعد",
+  "streamsAppearHere": "ستظهر المسالك هنا بمجرد إضافتها."
 }

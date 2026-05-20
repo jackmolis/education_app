@@ -238,4 +238,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get chooseStream => 'Choisir la filière';
+
+  @override
+  String get failedToLoadStreams => 'Échec du chargement des filières';
+
+  @override
+  String get noStreamsAvailable => 'Aucune filière disponible pour le moment';
+
+  @override
+  String get streamsAppearHere =>
+      'Les filières apparaîtront ici une fois ajoutées.';
 }

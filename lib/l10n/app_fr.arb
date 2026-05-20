@@ -81,5 +81,8 @@
     "optionArabic": "Option Arabe",
     "optionFrenchDesc": "Étudier en français",
     "optionArabicDesc": "Étudier en arabe",
-  "chooseStream": "Choisir la filière"
+  "chooseStream": "Choisir la filière",
+  "failedToLoadStreams": "Échec du chargement des filières",
+  "noStreamsAvailable": "Aucune filière disponible pour le moment",
+  "streamsAppearHere": "Les filières apparaîtront ici une fois ajoutées."
 }

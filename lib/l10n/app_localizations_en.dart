@@ -239,4 +239,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chooseStream => 'Choose Stream';
+
+  @override
+  String get failedToLoadStreams => 'Failed to load streams';
+
+  @override
+  String get noStreamsAvailable => 'No streams available yet';
+
+  @override
+  String get streamsAppearHere =>
+      'Streams will appear here once they are added.';
 }

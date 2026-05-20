@@ -596,7 +596,7 @@ class _AddLessonScreenState extends ConsumerState<AddLessonScreen>
       );
     }
 
-    final subjectsAsync = ref.watch(subjectsByLevelProvider((levelId: _selectedLevelId!, streamId: null)));
+    final subjectsAsync = ref.watch(subjectsByLevelProvider((levelId: _selectedLevelId!, streamId: null, optionLang: null)));
     return subjectsAsync.when(
       loading: () => const LinearProgressIndicator(),
       error: (e, _) => Text('Error loading subjects: $e', style: const TextStyle(color: Colors.red)),

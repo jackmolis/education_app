@@ -56,7 +56,7 @@ class MiddleLevelsScreen extends StatelessWidget {
                   index: index,
                   onTap: () {
                     context.push(
-                      '/streams',
+                      '/option-selection',
                       extra: {
                         'levelId': level['id'],
                         'levelName': level['title'],

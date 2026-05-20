@@ -56,7 +56,7 @@ class HighLevelsScreen extends StatelessWidget {
                   index: index,
                   onTap: () {
                     context.push(
-                      '/streams',
+                      '/stream-selection',
                       extra: {
                         'levelId': level['id'],
                         'levelName': level['title'],

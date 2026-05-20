@@ -555,6 +555,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose Stream'**
   String get chooseStream;
+
+  /// No description provided for @failedToLoadStreams.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load streams'**
+  String get failedToLoadStreams;
+
+  /// No description provided for @noStreamsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No streams available yet'**
+  String get noStreamsAvailable;
+
+  /// No description provided for @streamsAppearHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Streams will appear here once they are added.'**
+  String get streamsAppearHere;
 }
 
 class _AppLocalizationsDelegate
