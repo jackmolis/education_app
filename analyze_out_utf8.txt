@@ -1,0 +1,16 @@
+﻿Analyzing nexora_academy...                                     
+
+  error - The getter 'positionSeconds' isn't defined for the type 'Object' - lib\features\courses\presentation\screens\lesson_details_screen.dart:68:41 - undefined_getter
+   info - Unnecessary use of multiple underscores - lib\features\dashboard\presentation\widgets\continue_learning_section.dart:24:24 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\features\dashboard\presentation\widgets\continue_learning_section.dart:38:22 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\features\dashboard\presentation\widgets\continue_learning_section.dart:45:18 - unnecessary_underscores
+  error - Target of URI doesn't exist: '../../../features/authentication/data/supabase_auth_repository.dart' - lib\features\video_progress\presentation\providers\video_progress_provider.dart:2:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../data/video_progress_repository.dart' - lib\features\video_progress\presentation\providers\video_progress_provider.dart:3:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../domain/models/video_progress_model.dart' - lib\features\video_progress\presentation\providers\video_progress_provider.dart:4:8 - uri_does_not_exist
+  error - The name 'VideoProgressRepository' isn't a type, so it can't be used as a type argument - lib\features\video_progress\presentation\providers\video_progress_provider.dart:6:50 - non_type_as_type_argument
+  error - The function 'VideoProgressRepository' isn't defined - lib\features\video_progress\presentation\providers\video_progress_provider.dart:7:10 - undefined_function
+  error - The name 'VideoProgressModel' isn't a type, so it can't be used as a type argument - lib\features\video_progress\presentation\providers\video_progress_provider.dart:12:39 - non_type_as_type_argument
+  error - Undefined name 'authRepositoryProvider' - lib\features\video_progress\presentation\providers\video_progress_provider.dart:14:30 - undefined_identifier
+  error - The name 'VideoProgressModel' isn't a type, so it can't be used as a type argument - lib\features\video_progress\presentation\providers\video_progress_provider.dart:21:56 - non_type_as_type_argument
+  error - Undefined name 'authRepositoryProvider' - lib\features\video_progress\presentation\providers\video_progress_provider.dart:23:30 - undefined_identifier
+

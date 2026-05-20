@@ -1,0 +1,9 @@
+﻿Analyzing lesson_details_screen.dart, app_router.dart, notifications_screen.dart...
+
+warning - lib\core\router\app_router.dart:1:8 - Unused import: 'package:flutter/material.dart'. Try removing the import directive. - unused_import
+warning - lib\core\router\app_router.dart:4:8 - Unused import: 'package:supabase_flutter/supabase_flutter.dart'. Try removing the import directive. - unused_import
+warning - lib\core\router\app_router.dart:97:40 - The value of the local variable 'lesson' isn't used. Try removing the variable or using it. - unused_local_variable
+warning - lib\core\router\app_router.dart:122:44 - The value of the local variable 'lesson' isn't used. Try removing the variable or using it. - unused_local_variable
+   info - lib\features\notifications\presentation\screens\notifications_screen.dart:128:25 - Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check. - use_build_context_synchronously
+
+5 issues found.

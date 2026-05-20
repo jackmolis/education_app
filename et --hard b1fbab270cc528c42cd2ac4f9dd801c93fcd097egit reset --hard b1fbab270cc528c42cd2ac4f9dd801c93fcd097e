@@ -1,0 +1,179 @@
+[33mcommit b1fbab270cc528c42cd2ac4f9dd801c93fcd097e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: devtg <zobir48@gmail.com>
+Date:   Sun Apr 19 02:07:58 2026 +0100
+
+    cho3ab and matier
+
+[33mcommit af1ade1f6e8b7958a7dba54e8c5e11cf894f7d04[m
+Author: devtg <zobir48@gmail.com>
+Date:   Sat Mar 28 02:10:44 2026 +0100
+
+    multi lang 2 v3
+
+[33mcommit 748a6f7c03bed8b0d999d7f186fa159d0edf13f3[m
+Author: devtg <zobir48@gmail.com>
+Date:   Thu Mar 26 23:56:30 2026 +0100
+
+    multi lang v3
+
+[33mcommit cd811d0a4664c3858e5448b53ea3deaab1d4b24f[m
+Author: devtg <zobir48@gmail.com>
+Date:   Wed Mar 25 00:56:02 2026 +0100
+
+    ui lesson v2
+
+[33mcommit 5b179820b36b7c311896441214f785466bf9e3a4[m
+Author: devtg <zobir48@gmail.com>
+Date:   Tue Mar 24 22:10:16 2026 +0100
+
+    app v1
+
+[33mcommit 4defa899b168e89b0ebea73e2ac09eaea991eeb4[m
+Author: devtg <zobir48@gmail.com>
+Date:   Tue Mar 24 12:24:10 2026 +0100
+
+    final ui screen v2
+
+[33mcommit 36da35895897680e3e90d77a17745d567daf0998[m
+Author: devtg <zobir48@gmail.com>
+Date:   Mon Mar 23 18:30:23 2026 +0100
+
+    final ui screen v1
+
+[33mcommit 346b41333709b9f5efe632e54817f4b3ad4a6302[m
+Author: devtg <zobir48@gmail.com>
+Date:   Mon Mar 23 04:00:40 2026 +0100
+
+    edit ui subject
+
+[33mcommit d84938fe879e04f5d5ee5a1841d30a9ff3b4a2f1[m
+Author: devtg <zobir48@gmail.com>
+Date:   Mon Mar 23 03:34:37 2026 +0100
+
+    ui
+
+[33mcommit c30e1464c6c7645f5b57d11f3eb91ebb6905cdfe[m
+Author: devtg <zobir48@gmail.com>
+Date:   Mon Mar 23 03:07:58 2026 +0100
+
+    ux improvement
+
+[33mcommit 5d2652d80ed71f76aec625163f92178d5231ce19[m
+Author: devtg <zobir48@gmail.com>
+Date:   Mon Mar 23 02:42:05 2026 +0100
+
+    analytic 2
+
+[33mcommit 924609b0ddf6d8062b5ece17d4d2e78beb7f23af[m
+Author: devtg <zobir48@gmail.com>
+Date:   Sun Mar 22 15:56:08 2026 +0100
+
+    analytic
+
+[33mcommit 1c1f4dcd8b59e48e59d4e08c03d2f0a3c14cb8ab[m
+Author: devtg <zobir48@gmail.com>
+Date:   Sun Mar 22 15:33:10 2026 +0100
+
+    offlin mode
+
+[33mcommit c5728ace6d30477a7677a8f2715ddfdc58a212ed[m
+Author: devtg <zobir48@gmail.com>
+Date:   Sun Mar 22 03:02:50 2026 +0100
+
+    pdf
+
+[33mcommit 9c6ff68e0581499a4a2a2607d78563d48c13edcc[m
+Author: devtg <zobir48@gmail.com>
+Date:   Sun Mar 22 01:33:44 2026 +0000
+
+    vedio player
+
+[33mcommit ffb872af36cbbf401fc1cd117c363e4bba2e5fa2[m
+Author: devtg <zobir48@gmail.com>
+Date:   Sun Mar 22 01:20:22 2026 +0000
+
+    Performance advanced 2
+
+[33mcommit be6f4d553f9f8a486ab3ec16c677a1a39d3a9814[m
+Author: devtg <zobir48@gmail.com>
+Date:   Sun Mar 22 00:44:40 2026 +0000
+
+    Performance advanced
+
+[33mcommit 98e5fc2ae2dd6ed26ced2387f52d714d90c8a072[m
+Author: devtg <zobir48@gmail.com>
+Date:   Sat Mar 21 14:13:05 2026 +0000
+
+    fix admin1
+
+[33mcommit 2572cbbd5db8eff11b49a2ef0f5d64477d335c04[m
+Author: devtg <zobir48@gmail.com>
+Date:   Sat Mar 21 02:21:37 2026 +0000
+
+    add quiz
+
+[33mcommit c816ea971eb59c74375e85aaaec0c7ed58497604[m
+Author: devtg <zobir48@gmail.com>
+Date:   Sat Mar 21 01:49:22 2026 +0000
+
+    add quiz
+
+[33mcommit b0d0fec31035e31d7098a98d6bca680793d78bba[m
+Author: devtg <zobir48@gmail.com>
+Date:   Sat Mar 21 01:41:17 2026 +0000
+
+    manage lessons
+
+[33mcommit feefaa172e8212cd503a9bec1147a9bbc5f86ee2[m
+Author: devtg <zobir48@gmail.com>
+Date:   Sat Mar 21 01:29:29 2026 +0000
+
+    manage lessons
+
+[33mcommit 4af709196cec455c26123e07ca9f2be8b5f91a34[m
+Author: devtg <zobir48@gmail.com>
+Date:   Fri Mar 20 02:24:42 2026 +0000
+
+    fix add subject and quiz
+
+[33mcommit 406148837973d9d7e0dd35a5c8a0060b8d35bfee[m
+Author: devtg <zobir48@gmail.com>
+Date:   Fri Mar 20 02:20:35 2026 +0000
+
+    add lessons and quiz
+
+[33mcommit 28155a6116643807bc31aa8f6aed8f367d111496[m
+Author: devtg <zobir48@gmail.com>
+Date:   Fri Mar 20 01:38:24 2026 +0000
+
+    add subject and quiz
+
+[33mcommit 820954d7a93e90fe29e26dd1843bbd3c6d815178[m
+Author: devtg <zobir48@gmail.com>
+Date:   Fri Mar 20 01:23:18 2026 +0000
+
+    fix notification
+
+[33mcommit 7aa1e246fae2809f343d9ff1ce6dd6b299f52411[m
+Author: devtg <zobir48@gmail.com>
+Date:   Thu Mar 19 00:42:55 2026 +0000
+
+    fix notification roter
+
+[33mcommit a5238f7cfbeac4e44962073ca59910185ef6fbd2[m
+Author: devtg <zobir48@gmail.com>
+Date:   Thu Mar 19 00:10:39 2026 +0000
+
+    fix AppBar
+
+[33mcommit e9725e89cb05e0c271f9e9af500778884a5c10a2[m
+Author: devtg <zobir48@gmail.com>
+Date:   Wed Mar 18 23:24:54 2026 +0000
+
+    fix fullscreen issue in youtube player
+
+[33mcommit 488e25e0932f6d210daa21b0fd44be5ee1064cae[m
+Author: devtg <zobir48@gmail.com>
+Date:   Wed Mar 18 23:14:58 2026 +0000
+
+    Initial commit
