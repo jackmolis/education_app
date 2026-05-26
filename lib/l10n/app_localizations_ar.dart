@@ -265,4 +265,66 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get minShort => 'د';
+
+  @override
+  String get progress => 'التقدم';
+
+  @override
+  String get notes => 'الملاحظات';
+
+  @override
+  String get done => 'مكتمل';
+
+  @override
+  String get markComplete => 'إكمال';
+
+  @override
+  String get overview => 'نظرة عامة';
+
+  @override
+  String get resources => 'الموارد';
+
+  @override
+  String get discussion => 'المناقشة';
+
+  @override
+  String get noContentAvailable => 'لا يوجد محتوى متاح لهذا الدرس.';
+
+  @override
+  String get noResourcesAvailable => 'لا توجد موارد متاحة';
+
+  @override
+  String get beFirstToComment => 'كن أول من يعلق!';
+
+  @override
+  String get writeComment => 'اكتب تعليقاً...';
+
+  @override
+  String get lessonPdf => 'ملف PDF للدرس';
+
+  @override
+  String get viewOrDownload => 'عرض أو تحميل المادة';
+
+  @override
+  String get readyToTest => 'هل أنت مستعد لاختبار نفسك؟';
+
+  @override
+  String get startQuiz => 'ابدأ الاختبار';
+
+  @override
+  String get takeQuizDescription => 'اختبر معلوماتك حول هذا الدرس';
+
+  @override
+  String lessonNumber(int number) {
+    return 'الدرس $number';
+  }
+
+  @override
+  String get failedToLoadLesson => 'فشل في تحميل الدرس';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get next => 'التالي';
 }

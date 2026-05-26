@@ -267,4 +267,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get minShort => 'min';
+
+  @override
+  String get progress => 'Progress';
+
+  @override
+  String get notes => 'Notes';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get markComplete => 'Complete';
+
+  @override
+  String get overview => 'Overview';
+
+  @override
+  String get resources => 'Resources';
+
+  @override
+  String get discussion => 'Discussion';
+
+  @override
+  String get noContentAvailable => 'No content available for this lesson.';
+
+  @override
+  String get noResourcesAvailable => 'No resources available';
+
+  @override
+  String get beFirstToComment => 'Be the first to comment!';
+
+  @override
+  String get writeComment => 'Write a comment...';
+
+  @override
+  String get lessonPdf => 'Lesson PDF';
+
+  @override
+  String get viewOrDownload => 'View or download lesson material';
+
+  @override
+  String get readyToTest => 'Ready to test yourself?';
+
+  @override
+  String get startQuiz => 'Start Quiz';
+
+  @override
+  String get takeQuizDescription => 'Take a quiz to reinforce what you learned';
+
+  @override
+  String lessonNumber(int number) {
+    return 'Lesson $number';
+  }
+
+  @override
+  String get failedToLoadLesson => 'Failed to load lesson';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get next => 'Next';
 }

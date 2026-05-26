@@ -153,7 +153,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                     final lessonId = notification.lessonId;
                     if (subjectId != null && lessonId != null) {
                       if (!context.mounted) return;
-                      context.push('/subjects/$subjectId/lesson/$lessonId');
+                      context.go(
+                        '/subjects/${Uri.encodeComponent(subjectId)}/lessons/${Uri.encodeComponent(lessonId)}/details',
+                      );
                     }
                   },
                 );

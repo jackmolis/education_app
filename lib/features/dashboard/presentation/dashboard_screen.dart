@@ -5,7 +5,7 @@ import 'package:nexora_academy/l10n/app_localizations.dart';
 import '../../authentication/presentation/controllers/auth_controller.dart';
 import '../../notifications/presentation/providers/notifications_provider.dart';
 import 'widgets/welcome_header.dart';
-import 'widgets/daily_goal_card.dart';
+// import 'widgets/daily_goal_card.dart'; // Temporarily hidden — will be redesigned with real gamification
 import 'widgets/continue_learning_card.dart';
 import 'package:nexora_academy/core/widgets/app_scaffold.dart';
 
@@ -54,10 +54,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               onLogout: _logout,
             ),
             const SizedBox(height: 20),
-            // 2. Daily Goal Card
-            const DailyGoalCard(),
-            const SizedBox(height: 24),
-            // 3. Continue Learning Card
+            // 2. Continue Learning Card
             const ContinueLearningCard(),
             const SizedBox(height: 24),
             // 4. Levels Section

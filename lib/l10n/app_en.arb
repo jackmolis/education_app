@@ -91,6 +91,33 @@
   "inProgress": "In progress",
   "completed": "Completed",
   "resumeWatching": "Resume watching",
-  "minShort": "min"
+  "minShort": "min",
+  "progress": "Progress",
+  "notes": "Notes",
+  "done": "Done",
+  "markComplete": "Complete",
+  "overview": "Overview",
+  "resources": "Resources",
+  "discussion": "Discussion",
+  "noContentAvailable": "No content available for this lesson.",
+  "noResourcesAvailable": "No resources available",
+  "beFirstToComment": "Be the first to comment!",
+  "writeComment": "Write a comment...",
+  "lessonPdf": "Lesson PDF",
+  "viewOrDownload": "View or download lesson material",
+  "readyToTest": "Ready to test yourself?",
+  "startQuiz": "Start Quiz",
+  "takeQuizDescription": "Take a quiz to reinforce what you learned",
+  "lessonNumber": "Lesson {number}",
+  "@lessonNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "failedToLoadLesson": "Failed to load lesson",
+  "retry": "Retry",
+  "next": "Next"
 }
 

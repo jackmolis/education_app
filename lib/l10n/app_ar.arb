@@ -90,5 +90,32 @@
   "inProgress": "قيد المشاهدة",
   "completed": "مكتمل",
   "resumeWatching": "متابعة المشاهدة",
-  "minShort": "د"
+  "minShort": "د",
+  "progress": "التقدم",
+  "notes": "الملاحظات",
+  "done": "مكتمل",
+  "markComplete": "إكمال",
+  "overview": "نظرة عامة",
+  "resources": "الموارد",
+  "discussion": "المناقشة",
+  "noContentAvailable": "لا يوجد محتوى متاح لهذا الدرس.",
+  "noResourcesAvailable": "لا توجد موارد متاحة",
+  "beFirstToComment": "كن أول من يعلق!",
+  "writeComment": "اكتب تعليقاً...",
+  "lessonPdf": "ملف PDF للدرس",
+  "viewOrDownload": "عرض أو تحميل المادة",
+  "readyToTest": "هل أنت مستعد لاختبار نفسك؟",
+  "startQuiz": "ابدأ الاختبار",
+  "takeQuizDescription": "اختبر معلوماتك حول هذا الدرس",
+  "lessonNumber": "الدرس {number}",
+  "@lessonNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "failedToLoadLesson": "فشل في تحميل الدرس",
+  "retry": "إعادة المحاولة",
+  "next": "التالي"
 }

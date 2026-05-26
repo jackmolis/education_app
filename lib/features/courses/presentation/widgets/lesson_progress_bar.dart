@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nexora_academy/l10n/app_localizations.dart';
 
 class LessonProgressBar extends StatelessWidget {
   final double progress;
@@ -10,6 +11,7 @@ class LessonProgressBar extends StatelessWidget {
     final clamped = progress.clamp(0.0, 1.0);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final pct = (clamped * 100).round();
+    final loc = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -19,7 +21,7 @@ class LessonProgressBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Progress',
+                loc.progress,
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,

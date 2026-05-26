@@ -258,7 +258,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 path: '/subjects',
                 redirect: (context, state) => '/dashboard',
               ),
-              // Legacy deep-link for lesson details from continue learning
+              // Legacy deep-link for lesson details (from notifications / continue learning)
               GoRoute(
                 path: '/subjects/:subjectId/lessons/:lessonId/details',
                 builder: (context, state) {

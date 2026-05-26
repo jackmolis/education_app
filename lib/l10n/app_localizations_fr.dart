@@ -266,4 +266,66 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get minShort => 'min';
+
+  @override
+  String get progress => 'Progression';
+
+  @override
+  String get notes => 'Notes';
+
+  @override
+  String get done => 'Terminé';
+
+  @override
+  String get markComplete => 'Terminer';
+
+  @override
+  String get overview => 'Aperçu';
+
+  @override
+  String get resources => 'Ressources';
+
+  @override
+  String get discussion => 'Discussion';
+
+  @override
+  String get noContentAvailable => 'Aucun contenu disponible pour cette leçon.';
+
+  @override
+  String get noResourcesAvailable => 'Aucune ressource disponible';
+
+  @override
+  String get beFirstToComment => 'Soyez le premier à commenter !';
+
+  @override
+  String get writeComment => 'Écrire un commentaire...';
+
+  @override
+  String get lessonPdf => 'PDF de la leçon';
+
+  @override
+  String get viewOrDownload => 'Voir ou télécharger le matériel';
+
+  @override
+  String get readyToTest => 'Prêt à vous tester ?';
+
+  @override
+  String get startQuiz => 'Commencer le quiz';
+
+  @override
+  String get takeQuizDescription => 'Testez vos connaissances sur cette leçon';
+
+  @override
+  String lessonNumber(int number) {
+    return 'Leçon $number';
+  }
+
+  @override
+  String get failedToLoadLesson => 'Échec du chargement de la leçon';
+
+  @override
+  String get retry => 'Réessayer';
+
+  @override
+  String get next => 'Suivant';
 }

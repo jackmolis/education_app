@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nexora_academy/l10n/app_localizations.dart';
 
 class LessonInfoSection extends StatelessWidget {
   final String title;
@@ -17,6 +18,7 @@ class LessonInfoSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final loc = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -58,14 +60,14 @@ class LessonInfoSection extends StatelessWidget {
             children: [
               _MetaChip(
                 icon: Icons.play_circle_outline_rounded,
-                label: 'Lesson $orderNumber',
+                label: loc.lessonNumber(orderNumber),
                 isDark: isDark,
               ),
               if (durationMinutes != null && durationMinutes! > 0) ...[
                 const SizedBox(width: 16),
                 _MetaChip(
                   icon: Icons.access_time_rounded,
-                  label: '$durationMinutes min',
+                  label: '$durationMinutes ${loc.minShort}',
                   isDark: isDark,
                 ),
               ],

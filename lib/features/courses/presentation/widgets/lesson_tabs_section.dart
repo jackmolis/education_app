@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../discussion/data/discussion_repository.dart';
 import '../../../discussion/discussion_providers.dart';
 import '../../../authentication/data/supabase_auth_repository.dart';
+import 'package:nexora_academy/l10n/app_localizations.dart';
 
 class LessonTabsSection extends ConsumerStatefulWidget {
   final String lessonId;
@@ -69,10 +70,10 @@ class _LessonTabsSectionState extends ConsumerState<LessonTabsSection>
             dividerColor: Colors.transparent,
             padding: EdgeInsets.zero,
             labelPadding: const EdgeInsets.only(right: 24),
-            tabs: const [
-              Tab(text: 'Overview'),
-              Tab(text: 'Resources'),
-              Tab(text: 'Discussion'),
+            tabs: [
+              Tab(text: AppLocalizations.of(context)!.overview),
+              Tab(text: AppLocalizations.of(context)!.resources),
+              Tab(text: AppLocalizations.of(context)!.discussion),
             ],
           ),
         ),
@@ -122,7 +123,7 @@ class _OverviewTab extends StatelessWidget {
         ? content!
         : description?.isNotEmpty == true
             ? description!
-            : 'No content available for this lesson.';
+            : AppLocalizations.of(context)!.noContentAvailable;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
@@ -166,7 +167,7 @@ class _ResourcesTab extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'No resources available',
+              AppLocalizations.of(context)!.noResourcesAvailable,
               style: TextStyle(
                 fontSize: 14,
                 color: isDark ? Colors.grey[500] : Colors.grey[500],
@@ -212,7 +213,7 @@ class _ResourcesTab extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Lesson PDF',
+                      AppLocalizations.of(context)!.lessonPdf,
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
@@ -223,7 +224,7 @@ class _ResourcesTab extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'View or download lesson material',
+                      AppLocalizations.of(context)!.viewOrDownload,
                       style: TextStyle(
                         fontSize: 12,
                         color: isDark ? Colors.grey[400] : Colors.grey[500],
@@ -325,7 +326,7 @@ class _DiscussionTabState extends ConsumerState<_DiscussionTab> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Be the first to comment!',
+                        AppLocalizations.of(context)!.beFirstToComment,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -386,7 +387,7 @@ class _DiscussionTabState extends ConsumerState<_DiscussionTab> {
                         : const Color(0xFF334155),
                   ),
                   decoration: InputDecoration(
-                    hintText: 'Write a comment...',
+                    hintText: AppLocalizations.of(context)!.writeComment,
                     hintStyle: TextStyle(
                       color: widget.isDark
                           ? Colors.grey[600]

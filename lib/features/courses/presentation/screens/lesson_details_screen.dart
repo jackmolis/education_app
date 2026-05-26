@@ -18,6 +18,7 @@ import '../../../video_progress/domain/models/video_progress_model.dart';
 import '../providers/lesson_details_provider.dart';
 import '../../../notes/presentation/notes_screen.dart';
 import 'package:nexora_academy/core/widgets/app_scaffold.dart';
+import 'package:nexora_academy/l10n/app_localizations.dart';
 
 class LessonDetailsScreen extends ConsumerStatefulWidget {
   final String levelId;
@@ -111,7 +112,7 @@ class _LessonDetailsScreenState extends ConsumerState<LessonDetailsScreen> {
                             size: 52, color: Colors.redAccent),
                         const SizedBox(height: 16),
                         Text(
-                          'Failed to load lesson',
+                          AppLocalizations.of(context)?.failedToLoadLesson ?? 'Failed to load lesson',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -135,7 +136,7 @@ class _LessonDetailsScreenState extends ConsumerState<LessonDetailsScreen> {
                           onPressed: () => ref
                               .invalidate(lessonDetailsProvider(widget.lessonId)),
                           icon: const Icon(Icons.refresh_rounded, size: 18),
-                          label: const Text('Retry'),
+                          label: Text(AppLocalizations.of(context)?.retry ?? 'Retry'),
                           style: FilledButton.styleFrom(
                             backgroundColor: const Color(0xFF4A6CF7),
                             shape: RoundedRectangleBorder(
@@ -224,8 +225,8 @@ class _LessonDetailsScreenState extends ConsumerState<LessonDetailsScreen> {
                               },
                             );
                           },
-                          icon: const Text(
-                            'Next',
+                          icon: Text(
+                            AppLocalizations.of(context)?.next ?? 'Next',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,

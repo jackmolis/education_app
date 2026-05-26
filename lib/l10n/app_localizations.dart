@@ -609,6 +609,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'min'**
   String get minShort;
+
+  /// No description provided for @progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get progress;
+
+  /// No description provided for @notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notes;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @markComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete'**
+  String get markComplete;
+
+  /// No description provided for @overview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get overview;
+
+  /// No description provided for @resources.
+  ///
+  /// In en, this message translates to:
+  /// **'Resources'**
+  String get resources;
+
+  /// No description provided for @discussion.
+  ///
+  /// In en, this message translates to:
+  /// **'Discussion'**
+  String get discussion;
+
+  /// No description provided for @noContentAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No content available for this lesson.'**
+  String get noContentAvailable;
+
+  /// No description provided for @noResourcesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No resources available'**
+  String get noResourcesAvailable;
+
+  /// No description provided for @beFirstToComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Be the first to comment!'**
+  String get beFirstToComment;
+
+  /// No description provided for @writeComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a comment...'**
+  String get writeComment;
+
+  /// No description provided for @lessonPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Lesson PDF'**
+  String get lessonPdf;
+
+  /// No description provided for @viewOrDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'View or download lesson material'**
+  String get viewOrDownload;
+
+  /// No description provided for @readyToTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to test yourself?'**
+  String get readyToTest;
+
+  /// No description provided for @startQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Quiz'**
+  String get startQuiz;
+
+  /// No description provided for @takeQuizDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a quiz to reinforce what you learned'**
+  String get takeQuizDescription;
+
+  /// No description provided for @lessonNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Lesson {number}'**
+  String lessonNumber(int number);
+
+  /// No description provided for @failedToLoadLesson.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load lesson'**
+  String get failedToLoadLesson;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
 }
 
 class _AppLocalizationsDelegate

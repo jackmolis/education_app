@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/widgets/tap_scale_wrapper.dart';
+import 'package:nexora_academy/l10n/app_localizations.dart';
 
 class LessonActionsRow extends StatelessWidget {
   final VoidCallback? onOpenPdf;
@@ -22,6 +23,7 @@ class LessonActionsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final loc = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -43,7 +45,7 @@ class LessonActionsRow extends StatelessWidget {
               icon: isCompleted
                   ? Icons.check_circle_rounded
                   : Icons.check_circle_outline_rounded,
-              label: isCompleted ? 'Done' : 'Complete',
+              label: isCompleted ? loc.done : loc.markComplete,
               gradient: isCompleted
                   ? const [Color(0xFF10B981), Color(0xFF34D399)]
                   : const [Color(0xFF4A6CF7), Color(0xFF819DF9)],
@@ -56,7 +58,7 @@ class LessonActionsRow extends StatelessWidget {
           Expanded(
             child: _PremiumActionCard(
               icon: Icons.note_alt_rounded,
-              label: 'Notes',
+              label: loc.notes,
               gradient: const [Color(0xFF7C3AED), Color(0xFFA78BFA)],
               isDark: isDark,
               onTap: onNotes,

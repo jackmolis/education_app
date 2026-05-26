@@ -90,5 +90,32 @@
   "inProgress": "En cours",
   "completed": "Terminé",
   "resumeWatching": "Reprendre la lecture",
-  "minShort": "min"
+  "minShort": "min",
+  "progress": "Progression",
+  "notes": "Notes",
+  "done": "Terminé",
+  "markComplete": "Terminer",
+  "overview": "Aperçu",
+  "resources": "Ressources",
+  "discussion": "Discussion",
+  "noContentAvailable": "Aucun contenu disponible pour cette leçon.",
+  "noResourcesAvailable": "Aucune ressource disponible",
+  "beFirstToComment": "Soyez le premier à commenter !",
+  "writeComment": "Écrire un commentaire...",
+  "lessonPdf": "PDF de la leçon",
+  "viewOrDownload": "Voir ou télécharger le matériel",
+  "readyToTest": "Prêt à vous tester ?",
+  "startQuiz": "Commencer le quiz",
+  "takeQuizDescription": "Testez vos connaissances sur cette leçon",
+  "lessonNumber": "Leçon {number}",
+  "@lessonNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "failedToLoadLesson": "Échec du chargement de la leçon",
+  "retry": "Réessayer",
+  "next": "Suivant"
 }
