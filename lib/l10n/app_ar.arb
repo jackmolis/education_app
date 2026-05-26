@@ -77,12 +77,18 @@
   "technological": "مسلك تكنولوجي",
   "original": "تعليم أصيل",
   "selectOption": "اختر مساراً",
-    "optionFrench": "المسار الفرنسي",
-    "optionArabic": "المسار العربي",
+    "optionFrench": "المسار الدولي",
+    "optionArabic": "المسار العام",
     "optionFrenchDesc": "الدراسة باللغة الفرنسية",
     "optionArabicDesc": "الدراسة باللغة العربية",
   "chooseStream": "اختر المسلك",
   "failedToLoadStreams": "فشل في تحميل المسالك",
   "noStreamsAvailable": "لا توجد مسالك متاحة بعد",
-  "streamsAppearHere": "ستظهر المسالك هنا بمجرد إضافتها."
+  "streamsAppearHere": "ستظهر المسالك هنا بمجرد إضافتها.",
+  "videoLesson": "درس فيديو",
+  "notStarted": "لم يبدأ",
+  "inProgress": "قيد المشاهدة",
+  "completed": "مكتمل",
+  "resumeWatching": "متابعة المشاهدة",
+  "minShort": "د"
 }

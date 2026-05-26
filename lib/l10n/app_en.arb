@@ -78,13 +78,19 @@
   "technological": "Technological",
   "original": "Original",
    "selectOption": "Select an option",
-    "optionFrench": "French Option",
-    "optionArabic": "Arabic Option",
+    "optionFrench": "International Track",
+    "optionArabic": "General Track",
     "optionFrenchDesc": "Study in French",
     "optionArabicDesc": "Study in Arabic",
   "chooseStream": "Choose Stream",
   "failedToLoadStreams": "Failed to load streams",
   "noStreamsAvailable": "No streams available yet",
-  "streamsAppearHere": "Streams will appear here once they are added."
+  "streamsAppearHere": "Streams will appear here once they are added.",
+  "videoLesson": "Video lesson",
+  "notStarted": "Not started",
+  "inProgress": "In progress",
+  "completed": "Completed",
+  "resumeWatching": "Resume watching",
+  "minShort": "min"
 }
 

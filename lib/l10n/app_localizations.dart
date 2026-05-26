@@ -529,13 +529,13 @@ abstract class AppLocalizations {
   /// No description provided for @optionFrench.
   ///
   /// In en, this message translates to:
-  /// **'French Option'**
+  /// **'International Track'**
   String get optionFrench;
 
   /// No description provided for @optionArabic.
   ///
   /// In en, this message translates to:
-  /// **'Arabic Option'**
+  /// **'General Track'**
   String get optionArabic;
 
   /// No description provided for @optionFrenchDesc.
@@ -573,6 +573,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Streams will appear here once they are added.'**
   String get streamsAppearHere;
+
+  /// No description provided for @videoLesson.
+  ///
+  /// In en, this message translates to:
+  /// **'Video lesson'**
+  String get videoLesson;
+
+  /// No description provided for @notStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Not started'**
+  String get notStarted;
+
+  /// No description provided for @inProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get inProgress;
+
+  /// No description provided for @completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completed;
+
+  /// No description provided for @resumeWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume watching'**
+  String get resumeWatching;
+
+  /// No description provided for @minShort.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get minShort;
 }
 
 class _AppLocalizationsDelegate

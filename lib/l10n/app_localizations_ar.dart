@@ -225,10 +225,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get selectOption => 'اختر مساراً';
 
   @override
-  String get optionFrench => 'المسار الفرنسي';
+  String get optionFrench => 'المسار الدولي';
 
   @override
-  String get optionArabic => 'المسار العربي';
+  String get optionArabic => 'المسار العام';
 
   @override
   String get optionFrenchDesc => 'الدراسة باللغة الفرنسية';
@@ -247,4 +247,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get streamsAppearHere => 'ستظهر المسالك هنا بمجرد إضافتها.';
+
+  @override
+  String get videoLesson => 'درس فيديو';
+
+  @override
+  String get notStarted => 'لم يبدأ';
+
+  @override
+  String get inProgress => 'قيد المشاهدة';
+
+  @override
+  String get completed => 'مكتمل';
+
+  @override
+  String get resumeWatching => 'متابعة المشاهدة';
+
+  @override
+  String get minShort => 'د';
 }

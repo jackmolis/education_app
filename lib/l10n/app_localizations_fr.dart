@@ -225,16 +225,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get selectOption => 'Choisissez une option';
 
   @override
-  String get optionFrench => 'Option Française';
+  String get optionFrench => 'Parcours International';
 
   @override
-  String get optionArabic => 'Option Arabe';
+  String get optionArabic => 'Parcours Général';
 
   @override
-  String get optionFrenchDesc => 'Étudier en français';
+  String get optionFrenchDesc => 'Études en langue française';
 
   @override
-  String get optionArabicDesc => 'Étudier en arabe';
+  String get optionArabicDesc => 'Études en langue arabe';
 
   @override
   String get chooseStream => 'Choisir la filière';
@@ -248,4 +248,22 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get streamsAppearHere =>
       'Les filières apparaîtront ici une fois ajoutées.';
+
+  @override
+  String get videoLesson => 'Leçon vidéo';
+
+  @override
+  String get notStarted => 'Non commencé';
+
+  @override
+  String get inProgress => 'En cours';
+
+  @override
+  String get completed => 'Terminé';
+
+  @override
+  String get resumeWatching => 'Reprendre la lecture';
+
+  @override
+  String get minShort => 'min';
 }

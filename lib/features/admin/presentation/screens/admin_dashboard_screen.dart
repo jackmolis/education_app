@@ -15,284 +15,573 @@ class AdminDashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final statsAsync = ref.watch(adminStatsProvider);
+    final isDark = theme.brightness == Brightness.dark;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isTablet = screenWidth > 600;
 
     return AppScaffold(
-      backgroundColor: theme.colorScheme.surface, 
-      appBar: AppBar(
-        title: const Text('Admin Dashboard', style: TextStyle(fontWeight: FontWeight.w600)),
-        centerTitle: false,
-        elevation: 0,
-      ),
+      backgroundColor: theme.colorScheme.surface,
       body: RefreshIndicator(
         onRefresh: () => ref.refresh(adminStatsProvider.future),
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Header Profiling
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Icon(Icons.shield_rounded, size: 32, color: theme.colorScheme.primary),
+        color: theme.colorScheme.primary,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
+          slivers: [
+            // ═══════════════════════════════════════
+            // HEADER SECTION
+            // ═══════════════════════════════════════
+            SliverToBoxAdapter(
+              child: _AdminHeader(isDark: isDark, theme: theme),
+            ),
+
+            // ═══════════════════════════════════════
+            // ANALYTICS CARDS
+            // ═══════════════════════════════════════
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                child: _SectionTitle(
+                  title: 'Analytics Overview',
+                  subtitle: 'Real-time platform metrics',
+                  theme: theme,
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+              sliver: statsAsync.when(
+                data: (stats) => SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: isTablet ? 4 : 2,
+                    crossAxisSpacing: 14,
+                    mainAxisSpacing: 14,
+                    childAspectRatio: isTablet ? 1.3 : 1.05,
+                  ),
+                  delegate: SliverChildListDelegate([
+                    _StatCard(
+                      title: 'Subjects',
+                      count: stats.totalSubjects,
+                      icon: Icons.category_rounded,
+                      gradient: const [Color(0xFFFF6B35), Color(0xFFFF8F65)],
+                      shadowColor: const Color(0xFFFF6B35),
                     ),
-                    const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Welcome back,', style: theme.textTheme.titleMedium?.copyWith(color: Colors.grey[600])),
-                        Text('Administrator', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
-                      ],
+                    _StatCard(
+                      title: 'Lessons',
+                      count: stats.totalLessons,
+                      icon: Icons.play_lesson_rounded,
+                      gradient: const [Color(0xFF0EA5E9), Color(0xFF38BDF8)],
+                      shadowColor: const Color(0xFF0EA5E9),
+                    ),
+                    _StatCard(
+                      title: 'Quizzes',
+                      count: stats.totalQuizzes,
+                      icon: Icons.quiz_rounded,
+                      gradient: const [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
+                      shadowColor: const Color(0xFF8B5CF6),
+                    ),
+                    _StatCard(
+                      title: 'Video Views',
+                      count: stats.totalVideoProgress,
+                      icon: Icons.visibility_rounded,
+                      gradient: const [Color(0xFF10B981), Color(0xFF34D399)],
+                      shadowColor: const Color(0xFF10B981),
+                    ),
+                  ]),
+                ),
+                loading: () => SliverToBoxAdapter(
+                  child: const ShimmerGridLoader(itemCount: 4, childAspectRatio: 1.05),
+                ),
+                error: (err, _) => SliverToBoxAdapter(
+                  child: _ErrorCard(theme: theme, message: err.toString()),
+                ),
+              ),
+            ),
+
+            // ═══════════════════════════════════════
+            // CHART SECTION
+            // ═══════════════════════════════════════
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 32, 20, 0),
+                child: _SectionTitle(
+                  title: 'Platform Activity',
+                  subtitle: 'Quiz completions over time',
+                  theme: theme,
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                child: statsAsync.when(
+                  data: (stats) => _ChartContainer(
+                    theme: theme,
+                    isDark: isDark,
+                    quizActivity: stats.quizActivity,
+                  ),
+                  loading: () => const ShimmerChartLoader(height: 220),
+                  error: (_, __) => const SizedBox.shrink(),
+                ),
+              ),
+            ),
+
+            // ═══════════════════════════════════════
+            // QUICK ACTIONS
+            // ═══════════════════════════════════════
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 32, 20, 0),
+                child: _SectionTitle(
+                  title: 'Quick Actions',
+                  subtitle: 'Create new content',
+                  theme: theme,
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _QuickActionCard(
+                        title: 'Subject',
+                        icon: Icons.add_circle_outline_rounded,
+                        gradient: const [Color(0xFFFF6B35), Color(0xFFFF8F65)],
+                        onTap: () => context.push('/admin/add-subject'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _QuickActionCard(
+                        title: 'Lesson',
+                        icon: Icons.video_call_rounded,
+                        gradient: const [Color(0xFF0EA5E9), Color(0xFF38BDF8)],
+                        onTap: () => context.push('/admin/add-lesson'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _QuickActionCard(
+                        title: 'Quiz',
+                        icon: Icons.post_add_rounded,
+                        gradient: const [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
+                        onTap: () => context.push('/admin/add-quiz'),
+                      ),
                     ),
                   ],
                 ),
-                
-                const SizedBox(height: 32),
-
-                // --- Analytics Overview ---
-                Text('Analytics Overview', style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 16),
-                
-                statsAsync.when(
-                  data: (stats) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        GridView.count(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          childAspectRatio: 1.1,
-                          children: [
-                            _buildStatCard(
-                              context,
-                              title: 'Subjects Count',
-                              count: stats.totalSubjects.toString(),
-                              icon: Icons.category_rounded,
-                              colors: [Colors.orange.shade400, Colors.deepOrange.shade800],
-                            ),
-                            _buildStatCard(
-                              context,
-                              title: 'Lessons Count',
-                              count: stats.totalLessons.toString(),
-                              icon: Icons.library_books_rounded,
-                              colors: [Colors.teal.shade400, Colors.teal.shade800],
-                            ),
-                            _buildStatCard(
-                              context,
-                              title: 'Quizzes Count',
-                              count: stats.totalQuizzes.toString(),
-                              icon: Icons.quiz_rounded,
-                              colors: [Colors.purple.shade400, Colors.deepPurple.shade800],
-                            ),
-                            _buildStatCard(
-                              context,
-                              title: 'Video Views',
-                              count: stats.totalVideoProgress.toString(),
-                              icon: Icons.play_circle_fill_rounded,
-                              colors: [Colors.blue.shade400, Colors.blue.shade800],
-                            ),
-                          ],
-                        ),
-                        
-                        const SizedBox(height: 32),
-
-                        // --- Platform Activity (Charts) ---
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text('Platform Activity', style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-                        ),
-                        const SizedBox(height: 16),
-                        
-                        Container(
-                          height: 250,
-                          padding: const EdgeInsets.only(right: 16, top: 24, bottom: 8, left: 8),
-                          decoration: BoxDecoration(
-                             color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.2),
-                             borderRadius: BorderRadius.circular(20),
-                             border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
-                          ),
-                          child: _buildUserActivityChart(context, stats.quizActivity),
-                        ),
-                        
-                        const SizedBox(height: 32),
-                        
-                        // --- Real-Time Feed ---
-                        const LiveActivitySection(),
-                      ],
-                    );
-                  },
-                  loading: () => Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const ShimmerGridLoader(itemCount: 4, childAspectRatio: 1.2),
-                      const SizedBox(height: 32),
-                      const ShimmerChartLoader(height: 250),
-                    ],
-                  ),
-                  error: (err, stack) => Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.errorContainer,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Column(
-                      children: [
-                        Icon(Icons.warning_rounded, color: theme.colorScheme.error, size: 48),
-                        const SizedBox(height: 12),
-                        Text(
-                          'Failed to load analytics',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: theme.colorScheme.onErrorContainer,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          err.toString(),
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onErrorContainer.withValues(alpha: 0.8),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 32),
-
-                // Quick Actions Array
-                Text('Quick Actions', style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 16),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      _buildQuickAction(context, 'Add Subject', Icons.add_circle, Colors.orange, () => context.push('/admin/add-subject')),
-                      const SizedBox(width: 12),
-                      _buildQuickAction(context, 'Add Lesson', Icons.play_lesson, Colors.teal, () => context.push('/admin/add-lesson')),
-                      const SizedBox(width: 12),
-                      _buildQuickAction(context, 'Add Quiz', Icons.quiz, Colors.purple, () => context.push('/admin/add-quiz')),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 32),
-
-                // Management Database Edit Cards
-                Text('Content Management', style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 16),
-                
-                _buildManagementCard(
-                  context: context,
-                  title: 'Manage Subjects',
-                  subtitle: 'Edit or delete existing subject categories.',
-                  icon: Icons.category_rounded,
-                  onTap: () => context.push('/admin/manage-subjects'),
-                ),
-                const SizedBox(height: 12),
-                _buildManagementCard(
-                  context: context,
-                  title: 'Manage Lessons',
-                  subtitle: 'Update lesson videos and materials.',
-                  icon: Icons.video_library_rounded,
-                  onTap: () => context.push('/admin/manage-lessons'),
-                ),
-                const SizedBox(height: 12),
-                _buildManagementCard(
-                  context: context,
-                  title: 'Manage Quizzes',
-                  subtitle: 'Modify quiz questions and constraints.',
-                  icon: Icons.rule_rounded,
-                  onTap: () => context.push('/admin/manage-quizzes'),
-                ),
-                
-                const SizedBox(height: 48), // Bottom padding
-              ],
+              ),
             ),
-          ),
+
+            // ═══════════════════════════════════════
+            // LIVE ACTIVITY
+            // ═══════════════════════════════════════
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 32, 20, 0),
+                child: const LiveActivitySection(),
+              ),
+            ),
+
+            // ═══════════════════════════════════════
+            // CONTENT MANAGEMENT
+            // ═══════════════════════════════════════
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 32, 20, 0),
+                child: _SectionTitle(
+                  title: 'Content Management',
+                  subtitle: 'Manage your platform content',
+                  theme: theme,
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 48),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  _ManagementCard(
+                    title: 'Manage Subjects',
+                    subtitle: 'Edit or delete subject categories',
+                    icon: Icons.category_rounded,
+                    accentColor: const Color(0xFFFF6B35),
+                    onTap: () => context.push('/admin/manage-subjects'),
+                  ),
+                  const SizedBox(height: 12),
+                  _ManagementCard(
+                    title: 'Manage Lessons',
+                    subtitle: 'Update videos and materials',
+                    icon: Icons.video_library_rounded,
+                    accentColor: const Color(0xFF0EA5E9),
+                    onTap: () => context.push('/admin/manage-lessons'),
+                  ),
+                  const SizedBox(height: 12),
+                  _ManagementCard(
+                    title: 'Manage Quizzes',
+                    subtitle: 'Modify questions and settings',
+                    icon: Icons.rule_rounded,
+                    accentColor: const Color(0xFF8B5CF6),
+                    onTap: () => context.push('/admin/manage-quizzes'),
+                  ),
+                ]),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildStatCard(BuildContext context, {required String title, required String count, required IconData icon, required List<Color> colors}) {
+
+// ═══════════════════════════════════════════════════════════════
+// _AdminHeader — Gradient header with avatar and greeting
+// ═══════════════════════════════════════════════════════════════
+
+class _AdminHeader extends StatelessWidget {
+  final bool isDark;
+  final ThemeData theme;
+
+  const _AdminHeader({required this.isDark, required this.theme});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         gradient: LinearGradient(
-          colors: colors,
+          colors: isDark
+              ? [const Color(0xFF1E3A5F), const Color(0xFF0F172A)]
+              : [const Color(0xFF2563EB), const Color(0xFF1D4ED8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
           BoxShadow(
-            color: colors.last.withValues(alpha: 0.3),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: const Color(0xFF2563EB).withOpacity(isDark ? 0.15 : 0.25),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          // Icon row
+          // Avatar
           Container(
-            padding: const EdgeInsets.all(10),
+            width: 56,
+            height: 56,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(12),
+              color: Colors.white.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.25),
+                width: 1.5,
+              ),
             ),
-            child: Icon(icon, size: 24, color: Colors.white),
+            child: const Icon(
+              Icons.shield_rounded,
+              color: Colors.white,
+              size: 28,
+            ),
           ),
-          const Spacer(),
-          // Title
-          Text(
-            title,
-            style: const TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w600),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+          const SizedBox(width: 18),
+          // Greeting
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _getGreeting(),
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Administrator',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 4),
-          // Counter
-          AnimatedCounter(
-            end: int.tryParse(count) ?? 0,
-            style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+          // Status badge
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.2),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF34D399),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                const Text(
+                  'Online',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildQuickAction(BuildContext context, String title, IconData icon, MaterialColor color, VoidCallback onTap) {
-    return ActionChip(
-      onPressed: onTap,
-      avatar: Icon(icon, color: color.shade700, size: 20),
-      label: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-      backgroundColor: color.shade50,
-      side: BorderSide(color: color.shade200),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Good morning,';
+    if (hour < 17) return 'Good afternoon,';
+    return 'Good evening,';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// _SectionTitle — Reusable section header with subtitle
+// ═══════════════════════════════════════════════════════════════
+
+class _SectionTitle extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final ThemeData theme;
+
+  const _SectionTitle({
+    required this.title,
+    required this.subtitle,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.3,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          subtitle,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurface.withOpacity(0.5),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// _StatCard — Modern gradient analytics card with animation
+// ═══════════════════════════════════════════════════════════════
+
+class _StatCard extends StatefulWidget {
+  final String title;
+  final int count;
+  final IconData icon;
+  final List<Color> gradient;
+  final Color shadowColor;
+
+  const _StatCard({
+    required this.title,
+    required this.count,
+    required this.icon,
+    required this.gradient,
+    required this.shadowColor,
+  });
+
+  @override
+  State<_StatCard> createState() => _StatCardState();
+}
+
+class _StatCardState extends State<_StatCard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _scaleAnim = Tween<double>(begin: 0.9, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: _scaleAnim,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(22),
+          gradient: LinearGradient(
+            colors: widget.gradient,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: widget.shadowColor.withOpacity(0.3),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Icon
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(widget.icon, size: 22, color: Colors.white),
+            ),
+            const Spacer(),
+            // Title
+            Text(
+              widget.title,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.85),
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4),
+            // Counter
+            AnimatedCounter(
+              end: widget.count,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+                letterSpacing: -0.5,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// _ChartContainer — Modern chart wrapper with glassmorphism
+// ═══════════════════════════════════════════════════════════════
+
+class _ChartContainer extends StatelessWidget {
+  final ThemeData theme;
+  final bool isDark;
+  final List<int> quizActivity;
+
+  const _ChartContainer({
+    required this.theme,
+    required this.isDark,
+    required this.quizActivity,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 220,
+      padding: const EdgeInsets.fromLTRB(12, 24, 20, 12),
+      decoration: BoxDecoration(
+        color: isDark
+            ? Colors.white.withOpacity(0.04)
+            : Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withOpacity(0.08)
+              : const Color(0xFFE2E8F0),
+        ),
+        boxShadow: isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+      ),
+      child: _buildChart(context),
     );
   }
 
-  Widget _buildUserActivityChart(BuildContext context, List<int> quizActivity) {
+  Widget _buildChart(BuildContext context) {
     if (quizActivity.isEmpty || quizActivity.every((val) => val == 0)) {
-       return const Center(child: Text('No activity yet', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.bar_chart_rounded,
+              size: 40,
+              color: theme.colorScheme.onSurface.withOpacity(0.2),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'No activity data yet',
+              style: TextStyle(
+                color: theme.colorScheme.onSurface.withOpacity(0.4),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
-    double maxVal = quizActivity.reduce((curr, next) => curr > next ? curr : next).toDouble();
+    double maxVal = quizActivity.reduce((a, b) => a > b ? a : b).toDouble();
     if (maxVal < 10) maxVal = 10;
     maxVal = maxVal * 1.2;
 
@@ -303,7 +592,7 @@ class AdminDashboardScreen extends ConsumerWidget {
           drawVerticalLine: false,
           horizontalInterval: maxVal / 4,
           getDrawingHorizontalLine: (value) => FlLine(
-            color: Colors.grey.withValues(alpha: 0.2),
+            color: theme.colorScheme.onSurface.withOpacity(0.06),
             strokeWidth: 1,
           ),
         ),
@@ -311,10 +600,17 @@ class AdminDashboardScreen extends ConsumerWidget {
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 40,
+              reservedSize: 36,
               getTitlesWidget: (value, meta) {
-                if(value == maxVal) return const SizedBox.shrink();
-                return Text(value.toInt().toString(), style: const TextStyle(fontSize: 10, color: Colors.grey));
+                if (value == maxVal) return const SizedBox.shrink();
+                return Text(
+                  value.toInt().toString(),
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: theme.colorScheme.onSurface.withOpacity(0.4),
+                    fontWeight: FontWeight.w500,
+                  ),
+                );
               },
             ),
           ),
@@ -326,8 +622,17 @@ class AdminDashboardScreen extends ConsumerWidget {
               reservedSize: 22,
               interval: 1,
               getTitlesWidget: (value, meta) {
-                if (value % 2 == 0) {
-                   return Text((value + 1).toInt().toString(), style: const TextStyle(fontSize: 10, color: Colors.grey));
+                final days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+                final idx = value.toInt();
+                if (idx >= 0 && idx < days.length) {
+                  return Text(
+                    days[idx],
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: theme.colorScheme.onSurface.withOpacity(0.4),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  );
                 }
                 return const SizedBox.shrink();
               },
@@ -336,15 +641,19 @@ class AdminDashboardScreen extends ConsumerWidget {
         ),
         borderData: FlBorderData(show: false),
         minX: 0,
-        maxX: (quizActivity.length - 1 < 1) ? 1 : (quizActivity.length - 1).toDouble(),
+        maxX: (quizActivity.length - 1).toDouble().clamp(1, double.infinity),
         minY: 0,
         maxY: maxVal,
         lineBarsData: [
           LineChartBarData(
-            spots: quizActivity.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value.toDouble())).toList(),
+            spots: quizActivity
+                .asMap()
+                .entries
+                .map((e) => FlSpot(e.key.toDouble(), e.value.toDouble()))
+                .toList(),
             isCurved: true,
             curveSmoothness: 0.35,
-            color: Theme.of(context).colorScheme.primary,
+            color: theme.colorScheme.primary,
             barWidth: 3,
             isStrokeCapRound: true,
             dotData: FlDotData(
@@ -353,8 +662,8 @@ class AdminDashboardScreen extends ConsumerWidget {
                 return FlDotCirclePainter(
                   radius: 4,
                   color: Colors.white,
-                  strokeWidth: 2,
-                  strokeColor: Theme.of(context).colorScheme.primary,
+                  strokeWidth: 2.5,
+                  strokeColor: theme.colorScheme.primary,
                 );
               },
             ),
@@ -364,63 +673,304 @@ class AdminDashboardScreen extends ConsumerWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.0),
+                  theme.colorScheme.primary.withOpacity(0.25),
+                  theme.colorScheme.primary.withOpacity(0.0),
                 ],
               ),
             ),
           ),
         ],
+        lineTouchData: LineTouchData(
+          touchTooltipData: LineTouchTooltipData(
+            getTooltipColor: (_) => theme.colorScheme.primary,
+
+            getTooltipItems: (spots) => spots.map((spot) {
+              return LineTooltipItem(
+                spot.y.toInt().toString(),
+                const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              );
+            }).toList(),
+          ),
+        ),
       ),
     );
   }
+}
 
-  Widget _buildManagementCard({
-    required BuildContext context,
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
+// ═══════════════════════════════════════════════════════════════
+// _QuickActionCard — Modern action card with gradient icon
+// ═══════════════════════════════════════════════════════════════
+
+class _QuickActionCard extends StatefulWidget {
+  final String title;
+  final IconData icon;
+  final List<Color> gradient;
+  final VoidCallback onTap;
+
+  const _QuickActionCard({
+    required this.title,
+    required this.icon,
+    required this.gradient,
+    required this.onTap,
+  });
+
+  @override
+  State<_QuickActionCard> createState() => _QuickActionCardState();
+}
+
+class _QuickActionCardState extends State<_QuickActionCard> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
-      ),
-      color: theme.colorScheme.surfaceContainerLowest,
-      margin: EdgeInsets.zero,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Row(
+    final isDark = theme.brightness == Brightness.dark;
+
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _pressed = true),
+      onTapUp: (_) {
+        setState(() => _pressed = false);
+        widget.onTap();
+      },
+      onTapCancel: () => setState(() => _pressed = false),
+      child: AnimatedScale(
+        scale: _pressed ? 0.95 : 1.0,
+        duration: const Duration(milliseconds: 150),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          decoration: BoxDecoration(
+            color: isDark
+                ? Colors.white.withOpacity(0.05)
+                : Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withOpacity(0.08)
+                  : const Color(0xFFE2E8F0),
+            ),
+            boxShadow: isDark
+                ? []
+                : [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 12,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.secondaryContainer,
-                  borderRadius: BorderRadius.circular(12),
+                  gradient: LinearGradient(
+                    colors: widget.gradient,
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: widget.gradient[0].withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
-                child: Icon(icon, size: 28, color: theme.colorScheme.onSecondaryContainer),
+                child: Icon(widget.icon, color: Colors.white, size: 22),
               ),
-              const SizedBox(width: 20),
+              const SizedBox(height: 12),
+              Text(
+                widget.title,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface.withOpacity(0.8),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// _ManagementCard — Premium content management card
+// ═══════════════════════════════════════════════════════════════
+
+class _ManagementCard extends StatefulWidget {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color accentColor;
+  final VoidCallback onTap;
+
+  const _ManagementCard({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.accentColor,
+    required this.onTap,
+  });
+
+  @override
+  State<_ManagementCard> createState() => _ManagementCardState();
+}
+
+class _ManagementCardState extends State<_ManagementCard> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _pressed = true),
+      onTapUp: (_) {
+        setState(() => _pressed = false);
+        widget.onTap();
+      },
+      onTapCancel: () => setState(() => _pressed = false),
+      child: AnimatedScale(
+        scale: _pressed ? 0.98 : 1.0,
+        duration: const Duration(milliseconds: 150),
+        child: Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: isDark
+                ? Colors.white.withOpacity(0.04)
+                : Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withOpacity(0.08)
+                  : const Color(0xFFE2E8F0),
+            ),
+            boxShadow: isDark
+                ? []
+                : [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.03),
+                      blurRadius: 12,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+          ),
+          child: Row(
+            children: [
+              // Accent icon container
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: widget.accentColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(
+                  widget.icon,
+                  size: 24,
+                  color: widget.accentColor,
+                ),
+              ),
+              const SizedBox(width: 16),
+              // Text content
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 4),
-                    Text(subtitle, style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey[600])),
+                    Text(
+                      widget.title,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      widget.subtitle,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: theme.colorScheme.onSurface.withOpacity(0.5),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right_rounded, color: Colors.grey[400]),
+              // Arrow
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.onSurface.withOpacity(0.04),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 14,
+                  color: theme.colorScheme.onSurface.withOpacity(0.4),
+                ),
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// _ErrorCard — Styled error state
+// ═══════════════════════════════════════════════════════════════
+
+class _ErrorCard extends StatelessWidget {
+  final ThemeData theme;
+  final String message;
+
+  const _ErrorCard({required this.theme, required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.errorContainer.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: theme.colorScheme.error.withOpacity(0.2),
+        ),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            Icons.warning_amber_rounded,
+            color: theme.colorScheme.error,
+            size: 40,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Failed to load analytics',
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: theme.colorScheme.error,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onErrorContainer.withOpacity(0.7),
+            ),
+          ),
+        ],
       ),
     );
   }

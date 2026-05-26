@@ -29,37 +29,35 @@ class LessonActionsRow extends StatelessWidget {
         children: [
           if (hasPdf)
             Expanded(
-              child: _ActionButton(
+              child: _PremiumActionCard(
                 icon: Icons.picture_as_pdf_rounded,
                 label: 'PDF',
-                color: const Color(0xFFF97316),
+                gradient: const [Color(0xFFFF6B35), Color(0xFFFF8F65)],
                 isDark: isDark,
                 onTap: onOpenPdf,
               ),
             ),
-          if (hasPdf) const SizedBox(width: 12),
+          if (hasPdf) const SizedBox(width: 10),
           Expanded(
-            child: _ActionButton(
+            child: _PremiumActionCard(
               icon: isCompleted
                   ? Icons.check_circle_rounded
                   : Icons.check_circle_outline_rounded,
               label: isCompleted ? 'Done' : 'Complete',
-              color: isCompleted
-                  ? const Color(0xFF10B981)
-                  : const Color(0xFF4A6CF7),
+              gradient: isCompleted
+                  ? const [Color(0xFF10B981), Color(0xFF34D399)]
+                  : const [Color(0xFF4A6CF7), Color(0xFF819DF9)],
               isDark: isDark,
               isLoading: isMarkingComplete,
-              onTap: isCompleted || isMarkingComplete
-                  ? null
-                  : onMarkComplete,
+              onTap: isCompleted || isMarkingComplete ? null : onMarkComplete,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Expanded(
-            child: _ActionButton(
-              icon: Icons.note_alt_outlined,
+            child: _PremiumActionCard(
+              icon: Icons.note_alt_rounded,
               label: 'Notes',
-              color: const Color(0xFF7C3AED),
+              gradient: const [Color(0xFF7C3AED), Color(0xFFA78BFA)],
               isDark: isDark,
               onTap: onNotes,
             ),
@@ -70,18 +68,18 @@ class LessonActionsRow extends StatelessWidget {
   }
 }
 
-class _ActionButton extends StatelessWidget {
+class _PremiumActionCard extends StatelessWidget {
   final IconData icon;
   final String label;
-  final Color color;
+  final List<Color> gradient;
   final bool isDark;
   final bool isLoading;
   final VoidCallback? onTap;
 
-  const _ActionButton({
+  const _PremiumActionCard({
     required this.icon,
     required this.label,
-    required this.color,
+    required this.gradient,
     required this.isDark,
     this.isLoading = false,
     this.onTap,
@@ -89,41 +87,51 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDisabled = onTap == null && !isLoading;
+
     return TapScaleWrapper(
       onTap: () => onTap?.call(),
       child: Opacity(
-        opacity: onTap == null && !isLoading ? 0.5 : 1.0,
+        opacity: isDisabled ? 0.5 : 1.0,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 14),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: isDark ? 0.15 : 0.08),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: color.withValues(alpha: isDark ? 0.25 : 0.15),
-              width: 1,
+            gradient: LinearGradient(
+              colors: gradient,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: gradient[0].withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (isLoading)
-                SizedBox(
+                const SizedBox(
                   width: 22,
                   height: 22,
                   child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: color,
+                    strokeWidth: 2.5,
+                    color: Colors.white,
                   ),
                 )
               else
-                Icon(icon, color: color, size: 24),
-              const SizedBox(height: 6),
+                Icon(icon, color: Colors.white, size: 24),
+              const SizedBox(height: 8),
               Text(
                 label,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: color,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                  letterSpacing: 0.2,
                 ),
               ),
             ],

@@ -7,6 +7,7 @@ import 'package:nexora_academy/core/utils/localization_helper.dart';
 import 'package:nexora_academy/core/widgets/empty_state_widget.dart';
 import '../../../../core/providers/locale_provider.dart';
 import 'package:nexora_academy/l10n/app_localizations.dart';
+import '../../data/progress_repository.dart';
 
 class LevelSubjectsScreen extends ConsumerWidget {
   final String levelId;
@@ -47,10 +48,10 @@ class LevelSubjectsScreen extends ConsumerWidget {
                     levelName,
                     style: const TextStyle(
                       fontWeight: FontWeight.w800,
-                      fontSize: 22,
+                      fontSize: 20,
                     ),
                     textAlign: TextAlign.center,
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -123,13 +124,12 @@ class LevelSubjectsScreen extends ConsumerWidget {
                           itemCount: subjects.length,
                           itemBuilder: (context, index) {
                             final subject = subjects[index];
-                            final progress = ((index + 1) * 12).clamp(5, 100);
                             final localizedName = subject.getName(locale.languageCode);
 
                             return _SubjectItemCard(
+                              subjectId: subject.id,
                               name: localizedName,
                               levelName: levelName,
-                              progressPercent: progress / 100.0,
                               colorIndex: index,
                               index: index,
                               onTap: () {
@@ -158,28 +158,28 @@ class LevelSubjectsScreen extends ConsumerWidget {
 // _SubjectItemCard — Animated subject card
 // ==========================================
 
-class _SubjectItemCard extends StatefulWidget {
+class _SubjectItemCard extends ConsumerStatefulWidget {
+  final String subjectId;
   final String name;
   final String levelName;
-  final double progressPercent;
   final int colorIndex;
   final int index;
   final VoidCallback onTap;
 
   const _SubjectItemCard({
+    required this.subjectId,
     required this.name,
     required this.levelName,
-    required this.progressPercent,
     required this.colorIndex,
     required this.index,
     required this.onTap,
   });
 
   @override
-  State<_SubjectItemCard> createState() => _SubjectItemCardState();
+  ConsumerState<_SubjectItemCard> createState() => _SubjectItemCardState();
 }
 
-class _SubjectItemCardState extends State<_SubjectItemCard>
+class _SubjectItemCardState extends ConsumerState<_SubjectItemCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _animController;
   late Animation<double> _fadeAnim;
@@ -236,7 +236,12 @@ class _SubjectItemCardState extends State<_SubjectItemCard>
   Widget build(BuildContext context) {
     final gradient = _gradients[widget.colorIndex % _gradients.length];
     final loc = AppLocalizations.of(context)!;
-    final progressText = '${(widget.progressPercent * 100).toInt()}% ${loc.completeProgress}';
+    final progressAsync = ref.watch(subjectProgressProvider(widget.subjectId));
+    final progressPercent = progressAsync.maybeWhen(
+      data: (val) => val.isNaN ? 0.0 : val,
+      orElse: () => 0.0,
+    );
+    final progressText = '${(progressPercent * 100).toInt()}% ${loc.completeProgress}';
 
     return FadeTransition(
       opacity: _fadeAnim,
@@ -302,11 +307,11 @@ class _SubjectItemCardState extends State<_SubjectItemCard>
                               Text(
                                 widget.name,
                                 style: const TextStyle(
-                                  fontSize: 17,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   color: Color(0xFF1E293B),
                                 ),
-                                maxLines: 1,
+                                maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 4),
@@ -321,7 +326,7 @@ class _SubjectItemCardState extends State<_SubjectItemCard>
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(
-                                        widget.levelName,
+                                        _extractBaseLevelName(widget.levelName),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
@@ -353,9 +358,9 @@ class _SubjectItemCardState extends State<_SubjectItemCard>
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(4),
                                 child: LinearProgressIndicator(
-                                  value: widget.progressPercent.isNaN
+                                  value: progressPercent.isNaN
                                       ? 0
-                                      : widget.progressPercent,
+                                      : progressPercent,
                                   minHeight: 5,
                                   backgroundColor: const Color(0xFFF1F5F9),
                                   valueColor:
@@ -390,4 +395,17 @@ class _SubjectItemCardState extends State<_SubjectItemCard>
       ),
     );
   }
+}
+
+
+/// Extracts the base level name from a compound path string.
+/// "2ème Bac - Sciences Agronomiques" → "2ème Bac"
+/// "Common Core" → "Common Core"
+String _extractBaseLevelName(String fullName) {
+  final separators = [' - ', ' — ', ' – '];
+  for (final sep in separators) {
+    final idx = fullName.indexOf(sep);
+    if (idx > 0) return fullName.substring(0, idx);
+  }
+  return fullName;
 }

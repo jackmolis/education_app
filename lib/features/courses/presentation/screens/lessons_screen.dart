@@ -124,7 +124,9 @@ class _LessonsScreenState extends ConsumerState<LessonsScreen> {
                       
                       return LessonCard(
                         title: localizedTitle.isNotEmpty ? localizedTitle : loc.untitledLesson,
+                        lessonId: lesson.id,
                         orderNumber: lesson.orderNumber,
+                        durationMinutes: lesson.duration,
                         isCompleted: completedLessonIds.contains(lesson.id),
                         onTap: () {
                           context.push(

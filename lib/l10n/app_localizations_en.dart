@@ -226,10 +226,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectOption => 'Select an option';
 
   @override
-  String get optionFrench => 'French Option';
+  String get optionFrench => 'International Track';
 
   @override
-  String get optionArabic => 'Arabic Option';
+  String get optionArabic => 'General Track';
 
   @override
   String get optionFrenchDesc => 'Study in French';
@@ -249,4 +249,22 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get streamsAppearHere =>
       'Streams will appear here once they are added.';
+
+  @override
+  String get videoLesson => 'Video lesson';
+
+  @override
+  String get notStarted => 'Not started';
+
+  @override
+  String get inProgress => 'In progress';
+
+  @override
+  String get completed => 'Completed';
+
+  @override
+  String get resumeWatching => 'Resume watching';
+
+  @override
+  String get minShort => 'min';
 }

@@ -67,10 +67,10 @@ class StreamSelectionScreen extends ConsumerWidget {
                     levelName,
                     style: const TextStyle(
                       fontWeight: FontWeight.w800,
-                      fontSize: 22,
+                      fontSize: 20,
                     ),
                     textAlign: TextAlign.center,
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),

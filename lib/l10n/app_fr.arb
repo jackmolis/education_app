@@ -77,12 +77,18 @@
   "technological": "Technologique",
   "original": "Originel",
     "selectOption": "Choisissez une option",
-    "optionFrench": "Option Française",
-    "optionArabic": "Option Arabe",
-    "optionFrenchDesc": "Étudier en français",
-    "optionArabicDesc": "Étudier en arabe",
+    "optionFrench": "Parcours International",
+    "optionArabic": "Parcours Général",
+    "optionFrenchDesc": "Études en langue française",
+    "optionArabicDesc": "Études en langue arabe",
   "chooseStream": "Choisir la filière",
   "failedToLoadStreams": "Échec du chargement des filières",
   "noStreamsAvailable": "Aucune filière disponible pour le moment",
-  "streamsAppearHere": "Les filières apparaîtront ici une fois ajoutées."
+  "streamsAppearHere": "Les filières apparaîtront ici une fois ajoutées.",
+  "videoLesson": "Leçon vidéo",
+  "notStarted": "Non commencé",
+  "inProgress": "En cours",
+  "completed": "Terminé",
+  "resumeWatching": "Reprendre la lecture",
+  "minShort": "min"
 }

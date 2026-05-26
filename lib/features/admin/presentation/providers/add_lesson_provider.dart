@@ -74,9 +74,11 @@ class AddLessonNotifier extends StateNotifier<AsyncValue<void>> {
       int? duration = int.tryParse(durationText.trim());
       
       final Map<String, dynamic> lessonData = {
+        'title': titleEn.trim().isNotEmpty ? titleEn.trim() : (titleFr.trim().isNotEmpty ? titleFr.trim() : titleAr.trim()),
         'title_en': titleEn.trim(),
         'title_fr': titleFr.trim(),
         'title_ar': titleAr.trim(),
+        'description': descriptionEn.trim().isNotEmpty ? descriptionEn.trim() : (descriptionFr.trim().isNotEmpty ? descriptionFr.trim() : descriptionAr.trim()),
         'description_en': descriptionEn.trim(),
         'description_fr': descriptionFr.trim(),
         'description_ar': descriptionAr.trim(),
