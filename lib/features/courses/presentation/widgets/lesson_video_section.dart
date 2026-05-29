@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/models/lesson_model.dart';
 import '../providers/storage_provider.dart';
+import '../../../authentication/domain/auth_repository.dart';
 import '../../../authentication/data/supabase_auth_repository.dart';
+import '../../../video_progress/data/video_progress_repository.dart';
 import '../../../video_progress/presentation/providers/video_progress_provider.dart';
 import 'lesson_video_player.dart';
 import 'lesson_details/video_card.dart';
@@ -39,9 +41,26 @@ class LessonVideoSectionState extends ConsumerState<LessonVideoSection> {
   /// Captured ONCE during init — never reactive afterwards.
   late final double _startPosition;
 
+  /// Repositories captured ONCE during init.
+  ///
+  /// These are plain `Provider`s (no rebuild side effects), so reading them a
+  /// single time here is safe. Caching them means the `onPositionChanged`
+  /// callback — which can fire during the player's `dispose()` — never calls
+  /// `ref.read()` after this widget has been deactivated. That deactivation is
+  /// exactly what triggered the
+  /// "Looking up a deactivated widget's ancestor is unsafe" /
+  /// `ProviderScope.containerOf` crash on navigation.
+  late final AuthRepository _authRepo;
+  late final VideoProgressRepository _videoProgressRepo;
+
   @override
   void initState() {
     super.initState();
+    // Cache repositories once — safe to read plain Providers here, and avoids
+    // touching `ref` during dispose-time callbacks.
+    _authRepo = ref.read(authRepositoryProvider);
+    _videoProgressRepo = ref.read(videoProgressRepositoryProvider);
+
     // Resolve the initial position a single time:
     //  1. Navigation param (continue-watching deep link), else
     //  2. The saved DB progress if already cached.
@@ -94,10 +113,13 @@ class LessonVideoSectionState extends ConsumerState<LessonVideoSection> {
         onPositionChanged: (position, duration) {
           // Fire-and-forget — does not block playback, does not invalidate
           // any provider during playback.
-          final user = ref.read(authRepositoryProvider).currentUser;
+          //
+          // Uses the repositories cached in initState (NOT `ref.read`) so this
+          // is safe even when invoked from the player's dispose() after this
+          // widget has been deactivated during navigation.
+          final user = _authRepo.currentUser;
           if (user == null) return;
-          ref
-              .read(videoProgressRepositoryProvider)
+          _videoProgressRepo
               .saveProgress(
                 userId: user.id,
                 lessonId: lesson.id,
