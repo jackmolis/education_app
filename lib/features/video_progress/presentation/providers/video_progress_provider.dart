@@ -18,7 +18,8 @@ final lessonVideoProgressProvider =
 });
 
 /// Returns the most recently watched lesson (for the Dashboard card).
-final lastWatchedProvider = FutureProvider.autoDispose<VideoProgressModel?>((ref) async {
+/// NOT autoDispose — persists across navigation to avoid refetching on every dashboard visit.
+final lastWatchedProvider = FutureProvider<VideoProgressModel?>((ref) async {
   final repo = ref.watch(videoProgressRepositoryProvider);
   final authRepo = ref.watch(authRepositoryProvider);
   final user = authRepo.currentUser;

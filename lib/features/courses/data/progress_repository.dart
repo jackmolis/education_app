@@ -12,7 +12,8 @@ final progressRepositoryProvider = Provider<ProgressRepository>((ref) {
 });
 
 // Provides a list of ONLY the lesson IDs that the user has completed.
-final completedLessonIdsProvider = FutureProvider.autoDispose<List<String>>((ref) async {
+// NOT autoDispose — persists across navigation to avoid refetching on every screen visit.
+final completedLessonIdsProvider = FutureProvider<List<String>>((ref) async {
   final repo = ref.watch(progressRepositoryProvider);
   final authRepo = ref.watch(authRepositoryProvider);
   final user = authRepo.currentUser;
@@ -21,8 +22,15 @@ final completedLessonIdsProvider = FutureProvider.autoDispose<List<String>>((ref
   return repo.getCompletedLessonIds(user.id);
 });
 
-// Provides the percentage of completed lessons for a specific subject
+// Provides the percentage of completed lessons for a specific subject.
+// Uses keepAlive via ref.keepAlive() pattern — cached in Hive so repeated
+// visits don't re-query Supabase.
 final subjectProgressProvider = FutureProvider.autoDispose.family<double, String>((ref, subjectId) async {
+  // Keep alive for 60 seconds after last listener detaches to avoid
+  // refetching when scrolling back to the same card.
+  final link = ref.keepAlive();
+  Future.delayed(const Duration(seconds: 60), () => link.close());
+
   final repo = ref.watch(progressRepositoryProvider);
   final authRepo = ref.watch(authRepositoryProvider);
   final user = authRepo.currentUser;
@@ -31,14 +39,10 @@ final subjectProgressProvider = FutureProvider.autoDispose.family<double, String
   return repo.getSubjectProgressPercentage(user.id, subjectId);
 });
 
-// Provides the total count of completed lessons across all subjects
-final totalCompletedLessonsProvider = FutureProvider.autoDispose<int>((ref) async {
-  final repo = ref.watch(progressRepositoryProvider);
-  final authRepo = ref.watch(authRepositoryProvider);
-  final user = authRepo.currentUser;
-  
-  if (user == null) return 0;
-  final completed = await repo.getCompletedLessonIds(user.id);
+// Provides the total count of completed lessons across all subjects.
+// Derives from completedLessonIdsProvider to avoid a duplicate Supabase query.
+final totalCompletedLessonsProvider = FutureProvider<int>((ref) async {
+  final completed = await ref.watch(completedLessonIdsProvider.future);
   return completed.length;
 });
 

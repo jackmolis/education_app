@@ -4,6 +4,7 @@ import 'package:nexora_academy/features/courses/domain/models/subject_model.dart
 import 'package:nexora_academy/features/courses/domain/models/level_model.dart';
 import 'package:nexora_academy/features/courses/data/subjects_repository.dart';
 
+// NOT autoDispose — levels rarely change and should persist across navigation.
 final levelsProvider = FutureProvider<List<LevelModel>>((ref) async {
   final response = await Supabase.instance.client.from('levels').select('id, name').order('name');
   return (response as List).map((json) => LevelModel.fromJson(json as Map<String, dynamic>)).toList();

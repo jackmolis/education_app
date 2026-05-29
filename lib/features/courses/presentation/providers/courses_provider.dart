@@ -3,6 +3,7 @@ import '../../domain/models/subject_model.dart';
 import '../../domain/models/lesson_model.dart';
 import '../../data/courses_repository.dart';
 import '../../data/progress_repository.dart';
+import '../../../video_progress/presentation/providers/video_progress_provider.dart';
 
 final coursesRepositoryProvider = Provider<CoursesRepository>((ref) {
   return CoursesRepository();
@@ -88,48 +89,38 @@ final lessonsProvider = AsyncNotifierProviderFamily<PaginatedLessonsNotifier, Pa
   return PaginatedLessonsNotifier();
 });
 
-final recentLessonsProvider = FutureProvider.autoDispose<List<LessonModel>>((ref) async {
-  final subjects = await ref.watch(subjectsProvider.future);
-  final List<LessonModel> allLessons = [];
-  
-  // Fetch lessons for all subjects
-  for (final subject in subjects) {
-    try {
-      final lessonsState = await ref.watch(lessonsProvider(subject.id).future);
-      allLessons.addAll(lessonsState.lessons);
-    } catch (e) {
-      // Skip if a subject fails to load its lessons
-      continue;
-    }
+final recentLessonsProvider = FutureProvider<List<LessonModel>>((ref) async {
+  // Optimized: fetch lessons ONLY from the last-watched subject (1 query)
+  // instead of iterating all subjects (which caused N+1 queries).
+  final repo = ref.read(coursesRepositoryProvider);
+  try {
+    final lastWatched = await ref.watch(lastWatchedProvider.future);
+    if (lastWatched == null) return [];
+    final lessons = await repo.getLessons(lastWatched.subjectId, limit: 5, offset: 0);
+    return lessons;
+  } catch (_) {
+    return [];
   }
-  
-  // Sort or slice them (for now, simply take the newest/last ones if ordered ascending)
-  if (allLessons.length > 5) {
-    return allLessons.sublist(0, 5);
-  }
-  return allLessons;
 });
 
-final continueLearningProvider = FutureProvider.autoDispose<LessonModel?>((ref) async {
-  final subjects = await ref.watch(subjectsProvider.future);
-  final completedLessonIds = await ref.watch(completedLessonIdsProvider.future);
-  
-  // Iterate subjects and their lessons in order
-  for (final subject in subjects) {
-    try {
-      final lessonsState = await ref.watch(lessonsProvider(subject.id).future);
-      
-      // Find the first lesson that is NOT in the completed list
-      for (final lesson in lessonsState.lessons) {
-        if (!completedLessonIds.contains(lesson.id)) {
-          return lesson;
-        }
+final continueLearningProvider = FutureProvider<LessonModel?>((ref) async {
+  // Optimized: use lastWatchedProvider (single DB query) to find the subject,
+  // then fetch only that subject's lessons to find the next incomplete one.
+  final lastWatched = await ref.watch(lastWatchedProvider.future);
+  if (lastWatched == null) return null;
+
+  try {
+    final repo = ref.read(coursesRepositoryProvider);
+    final lessonsState = await ref.watch(lessonsProvider(lastWatched.subjectId).future);
+    final completedLessonIds = await ref.watch(completedLessonIdsProvider.future);
+
+    for (final lesson in lessonsState.lessons) {
+      if (!completedLessonIds.contains(lesson.id)) {
+        return lesson;
       }
-    } catch (e) {
-      continue; // Skip failed fetches
     }
+    return null;
+  } catch (_) {
+    return null;
   }
-  
-  // Return null if all lessons across all subjects are completed, or no lessons exist
-  return null;
 });

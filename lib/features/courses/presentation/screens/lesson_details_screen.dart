@@ -55,6 +55,9 @@ class _LessonDetailsScreenState extends ConsumerState<LessonDetailsScreen> {
     } catch (e) {
       debugPrint('[VideoProgress] _saveAndPop error: $e');
     }
+    // Invalidate on exit so other screens show updated progress
+    ref.invalidate(lessonVideoProgressProvider(widget.lessonId));
+    ref.invalidate(lastWatchedProvider);
     if (mounted) {
       if (context.canPop()) {
         context.pop();
@@ -344,11 +347,12 @@ class _LessonDetailsScreenState extends ConsumerState<LessonDetailsScreen> {
         sourceIdentity: lesson.videoUrl,
         videoUrl: url,
         startPositionSeconds: savedPosition,
-        onPositionChanged: (position, duration) async {
-          final user =
-              container.read(authRepositoryProvider).currentUser;
+        onPositionChanged: (position, duration) {
+          // Fire-and-forget — don't block the timer or invalidate providers
+          // during playback. Providers are invalidated on screen exit.
+          final user = container.read(authRepositoryProvider).currentUser;
           if (user == null) return;
-          await container
+          container
               .read(videoProgressRepositoryProvider)
               .saveProgress(
                 userId: user.id,
@@ -356,10 +360,8 @@ class _LessonDetailsScreenState extends ConsumerState<LessonDetailsScreen> {
                 subjectId: lesson.subjectId,
                 positionSeconds: position,
                 durationSeconds: duration,
-              );
-          container.invalidate(
-              lessonVideoProgressProvider(lesson.id));
-          container.invalidate(lastWatchedProvider);
+              )
+              .catchError((_) {});
         },
       ),
     );
