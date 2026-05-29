@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../widgets/lesson_video_player.dart';
+import '../widgets/lesson_video_section.dart';
 import '../widgets/lesson_progress_bar.dart';
 import '../widgets/lesson_info_section.dart';
 import '../widgets/lesson_actions_row.dart';
 import '../widgets/lesson_tabs_section.dart';
 import '../widgets/quiz_cta.dart';
-import '../widgets/lesson_details/video_card.dart';
 import '../../domain/models/lesson_model.dart';
 import '../providers/storage_provider.dart';
 import '../../data/progress_repository.dart';
@@ -43,15 +42,12 @@ class LessonDetailsScreen extends ConsumerStatefulWidget {
 
 class _LessonDetailsScreenState extends ConsumerState<LessonDetailsScreen> {
   bool _isMarkingAsComplete = false;
-  final GlobalKey<dynamic> _videoPlayerKey = GlobalKey();
+  final GlobalKey<LessonVideoSectionState> _videoSectionKey = GlobalKey();
 
   /// Saves progress then pops.
   Future<void> _saveAndPop() async {
     try {
-      final state = _videoPlayerKey.currentState;
-      if (state != null) {
-        await state.saveCurrentProgress();
-      }
+      await _videoSectionKey.currentState?.saveCurrentProgress();
     } catch (e) {
       debugPrint('[VideoProgress] _saveAndPop error: $e');
     }
@@ -188,6 +184,10 @@ class _LessonDetailsScreenState extends ConsumerState<LessonDetailsScreen> {
     final double progressPercentage =
         totalDuration > 0 ? (currentPosition / totalDuration) : 0.0;
 
+    // Initial resume position: navigation param takes priority, else saved DB value.
+    final double initialPosition =
+        widget.startPositionSeconds ?? currentPosition;
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
@@ -254,13 +254,17 @@ class _LessonDetailsScreenState extends ConsumerState<LessonDetailsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 1. Video Player
+                    // 1. Video Player — isolated widget. Watches ONLY the
+                    //    signed-URL provider, so progress/completion/next-lesson
+                    //    updates never rebuild or recreate the player.
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: _buildVideoPlayer(
-                        context,
-                        lesson,
-                        currentPosition,
+                      child: RepaintBoundary(
+                        child: LessonVideoSection(
+                          key: _videoSectionKey,
+                          lesson: lesson,
+                          initialPositionSeconds: initialPosition,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -301,89 +305,6 @@ class _LessonDetailsScreenState extends ConsumerState<LessonDetailsScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  // ── Video Player Builder ──────────────────────────────────────────
-
-  Widget _buildVideoPlayer(
-    BuildContext context,
-    LessonModel lesson,
-    double currentPosition,
-  ) {
-    if (lesson.videoUrl.isEmpty) {
-      return _videoPlaceholder('No video available');
-    }
-
-    final isYoutube = lesson.videoUrl.contains('youtube.com') ||
-        lesson.videoUrl.contains('youtu.be');
-
-    if (isYoutube) {
-      return _buildVideoCard(lesson, currentPosition);
-    }
-
-    return ref.watch(lessonMediaUrlProvider(lesson.videoUrl)).when(
-          data: (signedUrl) => _buildVideoCard(lesson, currentPosition,
-              overrideUrl: signedUrl),
-          loading: () => _videoPlaceholder(null, isLoading: true),
-          error: (_, __) => _videoPlaceholder('Failed to load video'),
-        );
-  }
-
-  Widget _buildVideoCard(
-    LessonModel lesson,
-    double currentPosition, {
-    String? overrideUrl,
-  }) {
-    final savedPosition =
-        widget.startPositionSeconds ?? currentPosition;
-    final container = ProviderScope.containerOf(context);
-    final url = overrideUrl ?? lesson.videoUrl;
-
-    return VideoCard(
-      videoPlayer: LessonVideoPlayer(
-        key: _videoPlayerKey,
-        sourceIdentity: lesson.videoUrl,
-        videoUrl: url,
-        startPositionSeconds: savedPosition,
-        onPositionChanged: (position, duration) {
-          // Fire-and-forget — don't block the timer or invalidate providers
-          // during playback. Providers are invalidated on screen exit.
-          final user = container.read(authRepositoryProvider).currentUser;
-          if (user == null) return;
-          container
-              .read(videoProgressRepositoryProvider)
-              .saveProgress(
-                userId: user.id,
-                lessonId: lesson.id,
-                subjectId: lesson.subjectId,
-                positionSeconds: position,
-                durationSeconds: duration,
-              )
-              .catchError((_) {});
-        },
-      ),
-    );
-  }
-
-  Widget _videoPlaceholder(String? message, {bool isLoading = false}) {
-    return Container(
-      height: 200,
-      decoration: BoxDecoration(
-        color: isLoading ? Colors.black12 : Colors.grey.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Center(
-        child: isLoading
-            ? const CircularProgressIndicator()
-            : Text(
-                message ?? '',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
-                ),
-              ),
       ),
     );
   }
