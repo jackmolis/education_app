@@ -155,16 +155,49 @@ class _LessonDetailsScreenState extends ConsumerState<LessonDetailsScreen> {
     );
   }
 
+  // ── Subject name localization ─────────────────────────────────────
+
+  /// Resolves the subject name for the current [languageCode] from the joined
+  /// `subjects` row, with graceful fallbacks. Per-language order:
+  ///   ar -> name_ar -> name -> 'Unknown'
+  ///   fr -> name_fr -> name -> 'Unknown'
+  ///   en -> name_en -> name -> 'Unknown'
+  String _resolveSubjectName(
+    Map<String, dynamic>? subjectJson,
+    String languageCode,
+  ) {
+    if (subjectJson == null) return 'Unknown';
+
+    String? pick(String key) {
+      final value = subjectJson[key]?.toString();
+      return (value != null && value.isNotEmpty) ? value : null;
+    }
+
+    final String? localized = switch (languageCode) {
+      'ar' => pick('name_ar'),
+      'fr' => pick('name_fr'),
+      _ => pick('name_en'),
+    };
+
+    return localized ?? pick('name') ?? 'Unknown';
+  }
+
   Widget _buildScreen(
     BuildContext context,
     Map<String, dynamic> data,
     bool isDark,
   ) {
     final lesson = LessonModel.fromJson(data);
-    final subjectName = (data['subjects']
-            as Map<String, dynamic>?)?['name']
-        ?.toString() ??
-        'Unknown';
+
+    // Language-aware subject name. Mirrors the same locale source used for
+    // lesson.getTitle(...) below. The joined `subjects` row exposes the
+    // localized columns (name_ar / name_fr / name_en); fall back to the
+    // default `name` column, then to 'Unknown'.
+    final subjectJson = data['subjects'] as Map<String, dynamic>?;
+    final subjectName = _resolveSubjectName(
+      subjectJson,
+      Localizations.localeOf(context).languageCode,
+    );
 
     final completedLessonsAsync = ref.watch(completedLessonIdsProvider);
     final isCompleted = completedLessonsAsync.maybeWhen(

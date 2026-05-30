@@ -22,8 +22,11 @@ class SubjectModel {
   String getName(String locale) {
     if (locale == 'fr' && nameFr.isNotEmpty) return nameFr;
     if (locale == 'ar' && nameAr.isNotEmpty) return nameAr;
+    if (locale == 'en' && nameEn.isNotEmpty) return nameEn;
+    // Cross-language fallback before the legacy default column.
     if (nameEn.isNotEmpty) return nameEn;
-    return name;
+    if (name.isNotEmpty) return name;
+    return '';
   }
 
   String getDescription(String locale) {

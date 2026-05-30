@@ -30,9 +30,17 @@ final lessonDetailsProvider = FutureProvider.family<Map<String, dynamic>, String
 
   try {
     // Full query — includes the `content` column for the Overview tab.
+    // Fetch every localization column for the lesson and the joined subject so
+    // the model getters can resolve ar / fr / en correctly.
     final data = await Supabase.instance.client
         .from('lessons')
-        .select('id, subject_id, title, description, content, video_url, duration, order_number, created_at, pdf_url, subjects(name)')
+        .select(
+          'id, subject_id, '
+          'title, title_ar, title_fr, title_en, '
+          'description, description_ar, description_fr, description_en, '
+          'content, video_url, duration, order_number, created_at, pdf_url, '
+          'subjects(name, name_ar, name_fr, name_en)',
+        )
         .eq('id', lessonId)
         .maybeSingle();
 
@@ -45,7 +53,13 @@ final lessonDetailsProvider = FutureProvider.family<Map<String, dynamic>, String
     try {
       final fallbackData = await Supabase.instance.client
           .from('lessons')
-          .select('id, subject_id, title, description, video_url, duration, order_number, created_at, pdf_url, subjects(name)')
+          .select(
+            'id, subject_id, '
+            'title, title_ar, title_fr, title_en, '
+            'description, description_ar, description_fr, description_en, '
+            'video_url, duration, order_number, created_at, pdf_url, '
+            'subjects(name, name_ar, name_fr, name_en)',
+          )
           .eq('id', lessonId)
           .maybeSingle();
 

@@ -1598,6 +1598,15 @@ class _AddLessonScreenState extends ConsumerState<AddLessonScreen>
     required ValueChanged<T?>? onChanged,
     bool disabled = false,
   }) {
+    // Defensive validation: DropdownButtonFormField asserts there is EXACTLY
+    // one item whose value equals `value`. When editing a lesson, the preset
+    // value (e.g. _selectedSubjectId) may not yet exist in the asynchronously
+    // loaded / filtered items list, or duplicates could exist. In either case
+    // fall back to null instead of crashing.
+    final bool valueExistsOnce =
+        value != null && items.where((item) => item.value == value).length == 1;
+    final T? safeValue = valueExistsOnce ? value : null;
+
     return Container(
       decoration: BoxDecoration(
         color: disabled
@@ -1618,7 +1627,7 @@ class _AddLessonScreenState extends ConsumerState<AddLessonScreen>
               ],
       ),
       child: DropdownButtonFormField<T>(
-        value: value,
+        value: safeValue,
         isExpanded: true,
         decoration: InputDecoration(
           labelText: label,

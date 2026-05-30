@@ -1,9 +1,11 @@
 class LessonModel {
   final String id;
   final String subjectId;
+  final String? title;
   final String? titleEn;
   final String? titleFr;
   final String? titleAr;
+  final String? description;
   final String? descriptionEn;
   final String? descriptionFr;
   final String? descriptionAr;
@@ -17,9 +19,11 @@ class LessonModel {
   LessonModel({
     required this.id,
     required this.subjectId,
+    this.title,
     this.titleEn,
     this.titleFr,
     this.titleAr,
+    this.description,
     this.descriptionEn,
     this.descriptionFr,
     this.descriptionAr,
@@ -32,24 +36,32 @@ class LessonModel {
   });
 
   String getTitle(String locale) {
-    if (locale == 'fr' && titleFr != null && titleFr!.isNotEmpty) return titleFr!;
-    if (locale == 'ar' && titleAr != null && titleAr!.isNotEmpty) return titleAr!;
-    return titleEn ?? '';
+    if (locale == 'fr' && (titleFr?.isNotEmpty ?? false)) return titleFr!;
+    if (locale == 'ar' && (titleAr?.isNotEmpty ?? false)) return titleAr!;
+    if (locale == 'en' && (titleEn?.isNotEmpty ?? false)) return titleEn!;
+    // Cross-language fallback before the legacy default column.
+    if (titleEn?.isNotEmpty ?? false) return titleEn!;
+    if (title?.isNotEmpty ?? false) return title!;
+    return '';
   }
 
   String getDescription(String locale) {
     if (locale == 'fr' && (descriptionFr?.isNotEmpty ?? false)) return descriptionFr!;
     if (locale == 'ar' && (descriptionAr?.isNotEmpty ?? false)) return descriptionAr!;
+    if (locale == 'en' && (descriptionEn?.isNotEmpty ?? false)) return descriptionEn!;
     if (descriptionEn?.isNotEmpty ?? false) return descriptionEn!;
+    if (description?.isNotEmpty ?? false) return description!;
     return '';
   }
 
   LessonModel copyWith({
     String? id,
     String? subjectId,
+    String? title,
     String? titleEn,
     String? titleFr,
     String? titleAr,
+    String? description,
     String? descriptionEn,
     String? descriptionFr,
     String? descriptionAr,
@@ -63,9 +75,11 @@ class LessonModel {
     return LessonModel(
       id: id ?? this.id,
       subjectId: subjectId ?? this.subjectId,
+      title: title ?? this.title,
       titleEn: titleEn ?? this.titleEn,
       titleFr: titleFr ?? this.titleFr,
       titleAr: titleAr ?? this.titleAr,
+      description: description ?? this.description,
       descriptionEn: descriptionEn ?? this.descriptionEn,
       descriptionFr: descriptionFr ?? this.descriptionFr,
       descriptionAr: descriptionAr ?? this.descriptionAr,
@@ -104,9 +118,11 @@ class LessonModel {
     return LessonModel(
       id: json['id'].toString(),
       subjectId: json['subject_id']?.toString() ?? '',
+      title: json['title'] as String?,
       titleEn: json['title_en'] as String?,
       titleFr: json['title_fr'] as String?,
       titleAr: json['title_ar'] as String?,
+      description: json['description'] as String?,
       descriptionEn: json['description_en'] as String?,
       descriptionFr: json['description_fr'] as String?,
       descriptionAr: json['description_ar'] as String?,
@@ -123,9 +139,11 @@ class LessonModel {
     return {
       'id': id,
       'subject_id': subjectId,
+      if (title != null) 'title': title,
       if (titleEn != null) 'title_en': titleEn,
       if (titleFr != null) 'title_fr': titleFr,
       if (titleAr != null) 'title_ar': titleAr,
+      if (description != null) 'description': description,
       if (descriptionEn != null) 'description_en': descriptionEn,
       if (descriptionFr != null) 'description_fr': descriptionFr,
       if (descriptionAr != null) 'description_ar': descriptionAr,
