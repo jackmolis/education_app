@@ -327,4 +327,88 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get next => 'التالي';
+
+  @override
+  String get selectSection => 'اختر قسماً';
+
+  @override
+  String get sectionLessons => 'الدروس';
+
+  @override
+  String get sectionSolvedExercises => 'التمارين المحلولة';
+
+  @override
+  String get sectionExamsSemester1 => 'فروض الدورة الأولى';
+
+  @override
+  String get sectionExamsSemester2 => 'فروض الدورة الثانية';
+
+  @override
+  String get comingSoon => 'قريباً';
+
+  @override
+  String get comingSoonDesc => 'سيكون هذا القسم متاحاً قريباً.';
+
+  @override
+  String exercisesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count تمريناً',
+      few: '$count تمارين',
+      two: 'تمرينان',
+      one: 'تمرين واحد',
+      zero: 'لا توجد تمارين',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get failedToLoadExercises => 'فشل في تحميل التمارين';
+
+  @override
+  String get noExercisesYet => 'لا توجد تمارين بعد';
+
+  @override
+  String get exercisesAppearHere => 'ستظهر تمارين هذا الدرس هنا قريباً.';
+
+  @override
+  String get openPdf => 'فتح ملف PDF';
+
+  @override
+  String get failedToLoadExams => 'فشل في تحميل الفروض';
+
+  @override
+  String get noExamsYet => 'لا توجد فروض بعد';
+
+  @override
+  String get examsAppearHere => 'ستظهر فروض هذه المادة هنا قريباً.';
+
+  @override
+  String examNumber(int number) {
+    return 'الفرض $number';
+  }
+
+  @override
+  String get openExamPdf => 'فتح الفرض (PDF)';
+
+  @override
+  String get openCorrectionPdf => 'فتح التصحيح (PDF)';
+
+  @override
+  String get examModels => 'النماذج';
+
+  @override
+  String get failedToLoadExamModels => 'فشل في تحميل النماذج';
+
+  @override
+  String get noExamModelsYet => 'لا توجد نماذج بعد';
+
+  @override
+  String get examModelsAppearHere => 'ستظهر نماذج هذا الفرض هنا قريباً.';
+
+  @override
+  String modelNumber(int number) {
+    return 'النموذج $number';
+  }
 }

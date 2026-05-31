@@ -16,11 +16,10 @@ final nextLessonProvider = FutureProvider.autoDispose.family<LessonModel?, Strin
   return repo.getNextLesson(subjectId, order);
 });
 
-/// Fetches lesson details with the Subject name joined.
+/// Fetches lesson details with the localized subject names joined.
 ///
-/// Strategy: try the full query (with `content` column) first.
-/// If it fails (column doesn't exist yet), fall back to the safe query
-/// without `content` so the screen still loads.
+/// Only localized columns are selected — legacy `title` / `description` /
+/// `content` (lessons) and `name` (subjects) are intentionally not fetched.
 final lessonDetailsProvider = FutureProvider.family<Map<String, dynamic>, String>((ref, lessonId) async {
   ref.keepAlive();
 
@@ -29,45 +28,22 @@ final lessonDetailsProvider = FutureProvider.family<Map<String, dynamic>, String
   }
 
   try {
-    // Full query — includes the `content` column for the Overview tab.
-    // Fetch every localization column for the lesson and the joined subject so
-    // the model getters can resolve ar / fr / en correctly.
     final data = await Supabase.instance.client
         .from('lessons')
         .select(
           'id, subject_id, '
-          'title, title_ar, title_fr, title_en, '
-          'description, description_ar, description_fr, description_en, '
-          'content, video_url, duration, order_number, created_at, pdf_url, '
-          'subjects(name, name_ar, name_fr, name_en)',
+          'title_ar, title_fr, title_en, '
+          'description_ar, description_fr, description_en, '
+          'video_url, duration, order_number, created_at, pdf_url, '
+          'subjects(name_ar, name_fr, name_en)',
         )
         .eq('id', lessonId)
         .maybeSingle();
 
     if (data != null) return data;
   } catch (e) {
-    // If the error is about the `content` column not existing,
-    // retry without it so the screen still loads.
-    debugPrint('[LessonDetails] Full query failed: $e — retrying without content column');
-
-    try {
-      final fallbackData = await Supabase.instance.client
-          .from('lessons')
-          .select(
-            'id, subject_id, '
-            'title, title_ar, title_fr, title_en, '
-            'description, description_ar, description_fr, description_en, '
-            'video_url, duration, order_number, created_at, pdf_url, '
-            'subjects(name, name_ar, name_fr, name_en)',
-          )
-          .eq('id', lessonId)
-          .maybeSingle();
-
-      if (fallbackData != null) return fallbackData;
-    } catch (fallbackError) {
-      debugPrint('[LessonDetails] Fallback query also failed: $fallbackError');
-      throw Exception('Failed to fetch lesson: $fallbackError');
-    }
+    debugPrint('[LessonDetails] Query failed: $e');
+    throw Exception('Failed to fetch lesson: $e');
   }
 
   throw Exception('Lesson not found (id: $lessonId). It may have been deleted.');

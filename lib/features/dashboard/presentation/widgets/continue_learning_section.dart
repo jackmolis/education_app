@@ -27,7 +27,6 @@ class ContinueLearningSection extends ConsumerWidget {
                 (s) => s.id == videoProgress.subjectId,
                 orElse: () => SubjectModel(
                   id: '',
-                  name: 'Unknown',
                   nameEn: 'Unknown',
                   nameFr: 'Unknown',
                   nameAr: 'Unknown',

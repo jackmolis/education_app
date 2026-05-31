@@ -729,6 +729,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next'**
   String get next;
+
+  /// No description provided for @selectSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a section'**
+  String get selectSection;
+
+  /// No description provided for @sectionLessons.
+  ///
+  /// In en, this message translates to:
+  /// **'Lessons'**
+  String get sectionLessons;
+
+  /// No description provided for @sectionSolvedExercises.
+  ///
+  /// In en, this message translates to:
+  /// **'Solved Exercises'**
+  String get sectionSolvedExercises;
+
+  /// No description provided for @sectionExamsSemester1.
+  ///
+  /// In en, this message translates to:
+  /// **'Semester 1 Exams'**
+  String get sectionExamsSemester1;
+
+  /// No description provided for @sectionExamsSemester2.
+  ///
+  /// In en, this message translates to:
+  /// **'Semester 2 Exams'**
+  String get sectionExamsSemester2;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming Soon'**
+  String get comingSoon;
+
+  /// No description provided for @comingSoonDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'This section will be available soon.'**
+  String get comingSoonDesc;
+
+  /// No description provided for @exercisesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No exercises} =1{1 exercise} other{{count} exercises}}'**
+  String exercisesCount(int count);
+
+  /// No description provided for @failedToLoadExercises.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load exercises'**
+  String get failedToLoadExercises;
+
+  /// No description provided for @noExercisesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Exercises Yet'**
+  String get noExercisesYet;
+
+  /// No description provided for @exercisesAppearHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercises for this lesson will appear here soon.'**
+  String get exercisesAppearHere;
+
+  /// No description provided for @openPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Open PDF'**
+  String get openPdf;
+
+  /// No description provided for @failedToLoadExams.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load exams'**
+  String get failedToLoadExams;
+
+  /// No description provided for @noExamsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Exams Yet'**
+  String get noExamsYet;
+
+  /// No description provided for @examsAppearHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Exams for this subject will appear here soon.'**
+  String get examsAppearHere;
+
+  /// No description provided for @examNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam {number}'**
+  String examNumber(int number);
+
+  /// No description provided for @openExamPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Exam PDF'**
+  String get openExamPdf;
+
+  /// No description provided for @openCorrectionPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Correction PDF'**
+  String get openCorrectionPdf;
+
+  /// No description provided for @examModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Models'**
+  String get examModels;
+
+  /// No description provided for @failedToLoadExamModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load models'**
+  String get failedToLoadExamModels;
+
+  /// No description provided for @noExamModelsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Models Yet'**
+  String get noExamModelsYet;
+
+  /// No description provided for @examModelsAppearHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Models for this exam will appear here soon.'**
+  String get examModelsAppearHere;
+
+  /// No description provided for @modelNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Model {number}'**
+  String modelNumber(int number);
 }
 
 class _AppLocalizationsDelegate

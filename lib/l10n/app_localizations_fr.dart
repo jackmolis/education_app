@@ -328,4 +328,89 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get next => 'Suivant';
+
+  @override
+  String get selectSection => 'Choisissez une section';
+
+  @override
+  String get sectionLessons => 'Cours';
+
+  @override
+  String get sectionSolvedExercises => 'Exercices Corrigés';
+
+  @override
+  String get sectionExamsSemester1 => 'Contrôles Semestre 1';
+
+  @override
+  String get sectionExamsSemester2 => 'Contrôles Semestre 2';
+
+  @override
+  String get comingSoon => 'Bientôt disponible';
+
+  @override
+  String get comingSoonDesc => 'Cette section sera bientôt disponible.';
+
+  @override
+  String exercisesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count exercices',
+      one: '1 exercice',
+      zero: 'Aucun exercice',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get failedToLoadExercises => 'Échec du chargement des exercices';
+
+  @override
+  String get noExercisesYet => 'Aucun Exercice';
+
+  @override
+  String get exercisesAppearHere =>
+      'Les exercices de cette leçon apparaîtront ici bientôt.';
+
+  @override
+  String get openPdf => 'Ouvrir le PDF';
+
+  @override
+  String get failedToLoadExams => 'Échec du chargement des contrôles';
+
+  @override
+  String get noExamsYet => 'Aucun Contrôle';
+
+  @override
+  String get examsAppearHere =>
+      'Les contrôles de cette matière apparaîtront ici bientôt.';
+
+  @override
+  String examNumber(int number) {
+    return 'Contrôle $number';
+  }
+
+  @override
+  String get openExamPdf => 'Ouvrir le contrôle (PDF)';
+
+  @override
+  String get openCorrectionPdf => 'Ouvrir la correction (PDF)';
+
+  @override
+  String get examModels => 'Modèles';
+
+  @override
+  String get failedToLoadExamModels => 'Échec du chargement des modèles';
+
+  @override
+  String get noExamModelsYet => 'Aucun Modèle';
+
+  @override
+  String get examModelsAppearHere =>
+      'Les modèles de ce contrôle apparaîtront ici bientôt.';
+
+  @override
+  String modelNumber(int number) {
+    return 'Modèle $number';
+  }
 }

@@ -46,7 +46,6 @@ class _AddLessonScreenState extends ConsumerState<AddLessonScreen>
     'AR': TextEditingController(),
   };
 
-  final _contentController = TextEditingController();
   final _videoUrlController = TextEditingController();
   final _pdfUrlController = TextEditingController();
   final _orderNumberController = TextEditingController();
@@ -72,7 +71,7 @@ class _AddLessonScreenState extends ConsumerState<AddLessonScreen>
   @override
   void initState() {
     super.initState();
-    _mainTabController = TabController(length: 4, vsync: this);
+    _mainTabController = TabController(length: 3, vsync: this);
     _mainTabController.addListener(() {
       if (_mainTabController.index != _currentStep) {
         setState(() => _currentStep = _mainTabController.index);
@@ -90,7 +89,6 @@ class _AddLessonScreenState extends ConsumerState<AddLessonScreen>
       _descControllers['FR']!.text = lesson.descriptionFr ?? '';
       _descControllers['AR']!.text = lesson.descriptionAr ?? '';
 
-      _contentController.text = lesson.content ?? '';
       _selectedSubjectId = lesson.subjectId;
       _videoUrlController.text = lesson.videoUrl;
       _pdfUrlController.text = lesson.pdfUrl;
@@ -123,7 +121,6 @@ class _AddLessonScreenState extends ConsumerState<AddLessonScreen>
     for (var c in _descControllers.values) {
       c.dispose();
     }
-    _contentController.dispose();
     _videoUrlController.dispose();
     _pdfUrlController.dispose();
     _orderNumberController.dispose();
@@ -184,7 +181,6 @@ class _AddLessonScreenState extends ConsumerState<AddLessonScreen>
           descriptionEn: _descControllers['EN']!.text,
           descriptionFr: _descControllers['FR']!.text,
           descriptionAr: _descControllers['AR']!.text,
-          content: _contentController.text,
           subjectId: _selectedSubjectId!,
           videoSourceIsUpload: _videoSourceIsUpload,
           videoUrl: _videoUrlController.text,
@@ -285,7 +281,6 @@ class _AddLessonScreenState extends ConsumerState<AddLessonScreen>
                 controller: _mainTabController,
                 children: [
                   _buildBasicInfoTab(theme, isDark),
-                  _buildContentTab(theme, isDark),
                   _buildMediaTab(theme, isDark),
                   _buildSettingsTab(theme, isDark, isLoading),
                 ],
@@ -391,7 +386,6 @@ class _AddLessonScreenState extends ConsumerState<AddLessonScreen>
   Widget _buildStepper(ThemeData theme, bool isDark) {
     final steps = [
       (icon: Icons.info_outline_rounded, label: 'Basic Info'),
-      (icon: Icons.article_outlined, label: 'Content'),
       (icon: Icons.perm_media_outlined, label: 'Media'),
       (icon: Icons.tune_rounded, label: 'Settings'),
     ];
@@ -722,34 +716,6 @@ class _AddLessonScreenState extends ConsumerState<AddLessonScreen>
             maxLines: 4,
           ),
         ],
-      ),
-    );
-  }
-
-  // ═══════════════════════════════════════════════════════════════
-  // CONTENT TAB
-  // ═══════════════════════════════════════════════════════════════
-
-  Widget _buildContentTab(ThemeData theme, bool isDark) {
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
-      child: _buildSectionCard(
-        theme: theme,
-        isDark: isDark,
-        title: 'Lesson Overview',
-        icon: Icons.menu_book_rounded,
-        child: _buildPremiumTextField(
-          theme: theme,
-          isDark: isDark,
-          controller: _contentController,
-          label: 'Full Content',
-          hint: 'Write the complete lesson explanation, key concepts, examples...',
-          icon: Icons.description_rounded,
-          isRtl: false,
-          maxLines: 18,
-          minLines: 12,
-        ),
       ),
     );
   }
@@ -1565,6 +1531,7 @@ class _AddLessonScreenState extends ConsumerState<AddLessonScreen>
     final subjectsAsync = ref.watch(subjectsByLevelProvider(
       (levelId: _selectedLevelId!, streamId: _selectedStreamId, optionLang: _selectedOption),
     ));
+    final localeCode = ref.watch(localeProvider).languageCode;
     return subjectsAsync.when(
       loading: () => _dropdownLoading(isDark),
       error: (e, _) => _dropdownError('Error loading subjects: $e'),
@@ -1578,7 +1545,7 @@ class _AddLessonScreenState extends ConsumerState<AddLessonScreen>
         items: subjects
             .map((s) => DropdownMenuItem(
                   value: s.id,
-                  child: Text(s.nameEn.isNotEmpty ? s.nameEn : s.name),
+                  child: Text(s.getName(localeCode)),
                 ))
             .toList(),
         onChanged: subjects.isEmpty ? null : (val) => setState(() => _selectedSubjectId = val),

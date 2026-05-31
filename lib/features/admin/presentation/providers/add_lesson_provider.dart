@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/admin_providers.dart';
 import '../../../courses/presentation/providers/courses_provider.dart';
+import '../../../courses/presentation/providers/lesson_details_provider.dart';
 import '../../../courses/presentation/providers/storage_provider.dart';
 
 final addLessonProvider = StateNotifierProvider.autoDispose<AddLessonNotifier, AsyncValue<void>>((ref) {
@@ -22,7 +23,6 @@ class AddLessonNotifier extends StateNotifier<AsyncValue<void>> {
     required String descriptionEn,
     required String descriptionFr,
     required String descriptionAr,
-    required String content,
     required String subjectId,
     required bool videoSourceIsUpload,
     required String videoUrl,
@@ -74,15 +74,12 @@ class AddLessonNotifier extends StateNotifier<AsyncValue<void>> {
       int? duration = int.tryParse(durationText.trim());
       
       final Map<String, dynamic> lessonData = {
-        'title': titleEn.trim().isNotEmpty ? titleEn.trim() : (titleFr.trim().isNotEmpty ? titleFr.trim() : titleAr.trim()),
         'title_en': titleEn.trim(),
         'title_fr': titleFr.trim(),
         'title_ar': titleAr.trim(),
-        'description': descriptionEn.trim().isNotEmpty ? descriptionEn.trim() : (descriptionFr.trim().isNotEmpty ? descriptionFr.trim() : descriptionAr.trim()),
         'description_en': descriptionEn.trim(),
         'description_fr': descriptionFr.trim(),
         'description_ar': descriptionAr.trim(),
-        'content': content.trim(),
         'subject_id': subjectId,
         'video_url': finalVideoUrl,
         'pdf_url': finalPdfUrl,
@@ -109,6 +106,17 @@ class AddLessonNotifier extends StateNotifier<AsyncValue<void>> {
       _ref.read(coursesRepositoryProvider).invalidateLessonsCache(subjectId);
       _ref.invalidate(lessonsProvider(subjectId));
       _ref.invalidate(allLessonsProvider);
+
+      // The lesson details screen reads a kept-alive family provider keyed by
+      // lessonId — it must be invalidated explicitly or it keeps serving the
+      // stale cached row until app restart.
+      if (lessonIdToEdit != null) {
+        _ref.invalidate(lessonDetailsProvider(lessonIdToEdit));
+      }
+
+      // Dashboard surfaces that derive from lesson content.
+      _ref.invalidate(recentLessonsProvider);
+      _ref.invalidate(continueLearningProvider);
 
       state = const AsyncValue.data(null);
     } catch (e, st) {

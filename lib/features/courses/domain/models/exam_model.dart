@@ -1,37 +1,32 @@
-class LessonModel {
+class ExamModel {
   final String id;
   final String subjectId;
+  final int semester;
   final String? titleEn;
   final String? titleFr;
   final String? titleAr;
   final String? descriptionEn;
   final String? descriptionFr;
   final String? descriptionAr;
-  final String videoUrl;
-  final String pdfUrl;
-  final int? duration;
   final int orderNumber;
   final DateTime? createdAt;
 
-  LessonModel({
+  ExamModel({
     required this.id,
     required this.subjectId,
+    required this.semester,
     this.titleEn,
     this.titleFr,
     this.titleAr,
     this.descriptionEn,
     this.descriptionFr,
     this.descriptionAr,
-    required this.videoUrl,
-    required this.pdfUrl,
-    this.duration,
     required this.orderNumber,
     this.createdAt,
   });
 
-  /// Localized title. Picks the column for [locale]; if that language is
-  /// empty it falls back to the other localized columns (fr → en → ar order
-  /// is intentional so something always renders), else empty string.
+  /// Localized title. Picks the column for [locale]; if empty, falls back to
+  /// the other localized columns so something always renders.
   String getTitle(String locale) {
     switch (locale) {
       case 'ar':
@@ -62,74 +57,30 @@ class LessonModel {
     return '';
   }
 
-  LessonModel copyWith({
-    String? id,
-    String? subjectId,
-    String? titleEn,
-    String? titleFr,
-    String? titleAr,
-    String? descriptionEn,
-    String? descriptionFr,
-    String? descriptionAr,
-    String? videoUrl,
-    String? pdfUrl,
-    int? duration,
-    int? orderNumber,
-    DateTime? createdAt,
-  }) {
-    return LessonModel(
-      id: id ?? this.id,
-      subjectId: subjectId ?? this.subjectId,
-      titleEn: titleEn ?? this.titleEn,
-      titleFr: titleFr ?? this.titleFr,
-      titleAr: titleAr ?? this.titleAr,
-      descriptionEn: descriptionEn ?? this.descriptionEn,
-      descriptionFr: descriptionFr ?? this.descriptionFr,
-      descriptionAr: descriptionAr ?? this.descriptionAr,
-      videoUrl: videoUrl ?? this.videoUrl,
-      pdfUrl: pdfUrl ?? this.pdfUrl,
-      duration: duration ?? this.duration,
-      orderNumber: orderNumber ?? this.orderNumber,
-      createdAt: createdAt ?? this.createdAt,
-    );
-  }
-
-  factory LessonModel.fromJson(Map<String, dynamic> json) {
+  factory ExamModel.fromJson(Map<String, dynamic> json) {
     DateTime? created;
     final rawCreated = json['created_at'];
     if (rawCreated is String) {
       created = DateTime.tryParse(rawCreated);
     }
 
-    int order = 0;
-    final rawOrder = json['order_number'];
-    if (rawOrder is int) {
-      order = rawOrder;
-    } else if (rawOrder is num) {
-      order = rawOrder.toInt();
+    int parseInt(dynamic raw) {
+      if (raw is int) return raw;
+      if (raw is num) return raw.toInt();
+      return 0;
     }
 
-    int? dur;
-    final rawDur = json['duration'];
-    if (rawDur is int) {
-      dur = rawDur;
-    } else if (rawDur is num) {
-      dur = rawDur.toInt();
-    }
-
-    return LessonModel(
+    return ExamModel(
       id: json['id'].toString(),
       subjectId: json['subject_id']?.toString() ?? '',
+      semester: parseInt(json['semester']),
       titleEn: json['title_en'] as String?,
       titleFr: json['title_fr'] as String?,
       titleAr: json['title_ar'] as String?,
       descriptionEn: json['description_en'] as String?,
       descriptionFr: json['description_fr'] as String?,
       descriptionAr: json['description_ar'] as String?,
-      videoUrl: json['video_url'] as String? ?? '',
-      pdfUrl: json['pdf_url'] as String? ?? '',
-      duration: dur,
-      orderNumber: order,
+      orderNumber: parseInt(json['order_number']),
       createdAt: created,
     );
   }
@@ -138,15 +89,13 @@ class LessonModel {
     return {
       'id': id,
       'subject_id': subjectId,
+      'semester': semester,
       if (titleEn != null) 'title_en': titleEn,
       if (titleFr != null) 'title_fr': titleFr,
       if (titleAr != null) 'title_ar': titleAr,
       if (descriptionEn != null) 'description_en': descriptionEn,
       if (descriptionFr != null) 'description_fr': descriptionFr,
       if (descriptionAr != null) 'description_ar': descriptionAr,
-      'video_url': videoUrl,
-      'pdf_url': pdfUrl,
-      if (duration != null) 'duration': duration,
       'order_number': orderNumber,
       if (createdAt != null) 'created_at': createdAt!.toIso8601String(),
     };

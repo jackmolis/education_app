@@ -1,6 +1,5 @@
 class SubjectModel {
   final String id;
-  final String name;
   final String nameEn;
   final String nameFr;
   final String nameAr;
@@ -10,7 +9,6 @@ class SubjectModel {
 
   SubjectModel({
     required this.id,
-    required this.name,
     required this.nameEn,
     required this.nameFr,
     required this.nameAr,
@@ -19,27 +17,36 @@ class SubjectModel {
     this.description,
   });
 
+  /// Localized name. Picks the column for [locale]; if that language is empty
+  /// it falls back to the other localized columns so something always renders.
   String getName(String locale) {
-    if (locale == 'fr' && nameFr.isNotEmpty) return nameFr;
-    if (locale == 'ar' && nameAr.isNotEmpty) return nameAr;
-    if (locale == 'en' && nameEn.isNotEmpty) return nameEn;
-    // Cross-language fallback before the legacy default column.
-    if (nameEn.isNotEmpty) return nameEn;
-    if (name.isNotEmpty) return name;
-    return '';
+    switch (locale) {
+      case 'ar':
+        return _firstNonEmpty([nameAr, nameFr, nameEn]);
+      case 'fr':
+        return _firstNonEmpty([nameFr, nameEn, nameAr]);
+      default:
+        return _firstNonEmpty([nameEn, nameFr, nameAr]);
+    }
   }
 
   String getDescription(String locale) {
     return description ?? '';
   }
 
+  static String _firstNonEmpty(List<String> values) {
+    for (final v in values) {
+      if (v.isNotEmpty) return v;
+    }
+    return '';
+  }
+
   factory SubjectModel.fromJson(Map<String, dynamic> json) {
     return SubjectModel(
       id: json['id'].toString(),
-      name: json['name']?.toString() ?? json['name_en']?.toString() ?? '',
-      nameEn: json['name_en'] ?? json['name'] ?? '',
-      nameFr: json['name_fr'] ?? '',
-      nameAr: json['name_ar'] ?? '',
+      nameEn: json['name_en']?.toString() ?? '',
+      nameFr: json['name_fr']?.toString() ?? '',
+      nameAr: json['name_ar']?.toString() ?? '',
       level: json['level_id']?.toString() ?? json['level']?.toString() ?? '',
       imageUrl: json['image_url']?.toString(),
       description: json['description']?.toString(),
@@ -49,7 +56,6 @@ class SubjectModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
       'name_en': nameEn,
       'name_fr': nameFr,
       'name_ar': nameAr,

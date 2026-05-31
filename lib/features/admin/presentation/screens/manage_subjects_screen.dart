@@ -584,8 +584,9 @@ class _ManageSubjectsScreenState extends ConsumerState<ManageSubjectsScreen> {
   }
 
   void _showEditDialog(BuildContext context, WidgetRef ref, SubjectModel subject) {
-    final locale = Localizations.localeOf(context).languageCode;
-    final nameController = TextEditingController(text: subject.getName(locale));
+    final nameEnController = TextEditingController(text: subject.nameEn);
+    final nameFrController = TextEditingController(text: subject.nameFr);
+    final nameArController = TextEditingController(text: subject.nameAr);
     final descController = TextEditingController(text: subject.description);
     final formKey = GlobalKey<FormState>();
 
@@ -600,29 +601,53 @@ class _ManageSubjectsScreenState extends ConsumerState<ManageSubjectsScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               content: Form(
                 key: formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextFormField(
-                      controller: nameController,
-                      decoration: InputDecoration(
-                        labelText: 'Subject Name',
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                        prefixIcon: const Icon(Icons.edit_rounded, size: 20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        controller: nameEnController,
+                        decoration: InputDecoration(
+                          labelText: 'English Name',
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                          prefixIcon: const Icon(Icons.edit_rounded, size: 20),
+                        ),
+                        validator: (v) => v == null || v.trim().isEmpty ? 'Required' : null,
                       ),
-                      validator: (v) => v == null || v.trim().isEmpty ? 'Required' : null,
-                    ),
-                    const SizedBox(height: 14),
-                    TextFormField(
-                      controller: descController,
-                      decoration: InputDecoration(
-                        labelText: 'Description',
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                        alignLabelWithHint: true,
+                      const SizedBox(height: 14),
+                      TextFormField(
+                        controller: nameFrController,
+                        decoration: InputDecoration(
+                          labelText: 'French Name',
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                          prefixIcon: const Icon(Icons.edit_rounded, size: 20),
+                        ),
+                        validator: (v) => v == null || v.trim().isEmpty ? 'Required' : null,
                       ),
-                      maxLines: 3,
-                    ),
-                  ],
+                      const SizedBox(height: 14),
+                      TextFormField(
+                        controller: nameArController,
+                        textDirection: TextDirection.rtl,
+                        textAlign: TextAlign.right,
+                        decoration: InputDecoration(
+                          labelText: 'Arabic Name',
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                          suffixIcon: const Icon(Icons.edit_rounded, size: 20),
+                        ),
+                        validator: (v) => v == null || v.trim().isEmpty ? 'Required' : null,
+                      ),
+                      const SizedBox(height: 14),
+                      TextFormField(
+                        controller: descController,
+                        decoration: InputDecoration(
+                          labelText: 'Description',
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                          alignLabelWithHint: true,
+                        ),
+                        maxLines: 3,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               actions: [
@@ -639,7 +664,9 @@ class _ManageSubjectsScreenState extends ConsumerState<ManageSubjectsScreen> {
                           final scaffoldMessenger = ScaffoldMessenger.of(context);
                           try {
                             await ref.read(adminRepositoryProvider).updateSubject(subject.id, {
-                              'name': nameController.text.trim(),
+                              'name_en': nameEnController.text.trim(),
+                              'name_fr': nameFrController.text.trim(),
+                              'name_ar': nameArController.text.trim(),
                               'description': descController.text.trim(),
                             });
                             ref.read(coursesRepositoryProvider).clearSubjectsCache();

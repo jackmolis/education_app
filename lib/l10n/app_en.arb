@@ -118,6 +118,50 @@
   },
   "failedToLoadLesson": "Failed to load lesson",
   "retry": "Retry",
-  "next": "Next"
+  "next": "Next",
+  "selectSection": "Select a section",
+  "sectionLessons": "Lessons",
+  "sectionSolvedExercises": "Solved Exercises",
+  "sectionExamsSemester1": "Semester 1 Exams",
+  "sectionExamsSemester2": "Semester 2 Exams",
+  "comingSoon": "Coming Soon",
+  "comingSoonDesc": "This section will be available soon.",
+  "exercisesCount": "{count, plural, =0{No exercises} =1{1 exercise} other{{count} exercises}}",
+  "@exercisesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "failedToLoadExercises": "Failed to load exercises",
+  "noExercisesYet": "No Exercises Yet",
+  "exercisesAppearHere": "Exercises for this lesson will appear here soon.",
+  "openPdf": "Open PDF",
+  "failedToLoadExams": "Failed to load exams",
+  "noExamsYet": "No Exams Yet",
+  "examsAppearHere": "Exams for this subject will appear here soon.",
+  "examNumber": "Exam {number}",
+  "@examNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "openExamPdf": "Open Exam PDF",
+  "openCorrectionPdf": "Open Correction PDF",
+  "examModels": "Models",
+  "failedToLoadExamModels": "Failed to load models",
+  "noExamModelsYet": "No Models Yet",
+  "examModelsAppearHere": "Models for this exam will appear here soon.",
+  "modelNumber": "Model {number}",
+  "@modelNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  }
 }
 

@@ -158,10 +158,11 @@ class _LessonDetailsScreenState extends ConsumerState<LessonDetailsScreen> {
   // ── Subject name localization ─────────────────────────────────────
 
   /// Resolves the subject name for the current [languageCode] from the joined
-  /// `subjects` row, with graceful fallbacks. Per-language order:
-  ///   ar -> name_ar -> name -> 'Unknown'
-  ///   fr -> name_fr -> name -> 'Unknown'
-  ///   en -> name_en -> name -> 'Unknown'
+  /// `subjects` row, using localized columns only. Per-language order falls
+  /// back across the other localized columns, then to 'Unknown'.
+  ///   ar -> name_ar -> name_fr -> name_en -> 'Unknown'
+  ///   fr -> name_fr -> name_en -> name_ar -> 'Unknown'
+  ///   en -> name_en -> name_fr -> name_ar -> 'Unknown'
   String _resolveSubjectName(
     Map<String, dynamic>? subjectJson,
     String languageCode,
@@ -174,12 +175,12 @@ class _LessonDetailsScreenState extends ConsumerState<LessonDetailsScreen> {
     }
 
     final String? localized = switch (languageCode) {
-      'ar' => pick('name_ar'),
-      'fr' => pick('name_fr'),
-      _ => pick('name_en'),
+      'ar' => pick('name_ar') ?? pick('name_fr') ?? pick('name_en'),
+      'fr' => pick('name_fr') ?? pick('name_en') ?? pick('name_ar'),
+      _ => pick('name_en') ?? pick('name_fr') ?? pick('name_ar'),
     };
 
-    return localized ?? pick('name') ?? 'Unknown';
+    return localized ?? 'Unknown';
   }
 
   Widget _buildScreen(
@@ -190,9 +191,8 @@ class _LessonDetailsScreenState extends ConsumerState<LessonDetailsScreen> {
     final lesson = LessonModel.fromJson(data);
 
     // Language-aware subject name. Mirrors the same locale source used for
-    // lesson.getTitle(...) below. The joined `subjects` row exposes the
-    // localized columns (name_ar / name_fr / name_en); fall back to the
-    // default `name` column, then to 'Unknown'.
+    // lesson.getTitle(...) below, reading the localized `subjects` columns
+    // (name_ar / name_fr / name_en) only.
     final subjectJson = data['subjects'] as Map<String, dynamic>?;
     final subjectName = _resolveSubjectName(
       subjectJson,
@@ -376,7 +376,6 @@ class _LessonDetailsScreenState extends ConsumerState<LessonDetailsScreen> {
     return LessonTabsSection(
       lessonId: lesson.id,
       description: lesson.getDescription(Localizations.localeOf(context).languageCode),
-      content: lesson.content,
       hasPdf: lesson.pdfUrl.isNotEmpty,
       onOpenPdf: lesson.pdfUrl.isNotEmpty
           ? () => _openPdf(context, lesson)

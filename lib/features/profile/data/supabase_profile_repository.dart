@@ -29,7 +29,7 @@ class SupabaseProfileRepository implements ProfileRepository {
       final response = await _supabaseClient
           .from('results')
           .select(
-            'id, user_id, lesson_id, score, total, created_at, lessons(title)',
+            'id, user_id, lesson_id, score, total, created_at, lessons(title_en, title_fr, title_ar)',
           )
           .eq('user_id', userId);
 

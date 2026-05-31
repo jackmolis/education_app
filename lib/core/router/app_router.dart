@@ -25,6 +25,13 @@ import '../../features/notifications/presentation/screens/notifications_screen.d
 import '../../features/courses/domain/models/lesson_model.dart';
 import '../../features/courses/domain/models/subject_model.dart';
 import '../../features/courses/presentation/screens/level_subjects_screen.dart';
+import '../../features/courses/presentation/screens/subject_sections_screen.dart';
+import '../../features/courses/presentation/screens/section_placeholder_screen.dart';
+import '../../features/courses/presentation/screens/solved_exercises_screen.dart';
+import '../../features/courses/presentation/screens/lesson_exercises_screen.dart';
+import '../../features/courses/presentation/screens/semester_exams_screen.dart';
+import '../../features/courses/presentation/screens/exam_models_screen.dart';
+import '../../features/courses/domain/models/exam_model.dart';
 import '../../features/courses/presentation/screens/primary_levels_screen.dart';
 import '../../features/courses/presentation/screens/middle_levels_screen.dart';
 import '../../features/courses/presentation/screens/high_levels_screen.dart';
@@ -154,6 +161,105 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                     streamId: streamId,
                     optionLang: optionLang,
                   );
+                },
+              ),
+              // Subject → Sections screen (Level → Subject → Sections → Content)
+              GoRoute(
+                path: '/levels/:levelId/subjects/:subjectId/sections',
+                builder: (context, state) {
+                  final levelId = Uri.decodeComponent(state.pathParameters['levelId']!);
+                  final subjectId = Uri.decodeComponent(state.pathParameters['subjectId']!);
+                  final extra = state.extra as Map<String, dynamic>? ?? {};
+                  final levelName = extra['levelName'] as String? ?? 'Level';
+                  final subject = extra['subject'] as SubjectModel?;
+
+                  return SubjectSectionsScreen(
+                    key: state.pageKey,
+                    levelId: levelId,
+                    levelName: levelName,
+                    subjectId: subjectId,
+                    subject: subject,
+                  );
+                },
+              ),
+              // Placeholder for sections without content yet
+              GoRoute(
+                path: '/section-placeholder',
+                builder: (context, state) {
+                  final extra = state.extra as Map<String, dynamic>? ?? {};
+                  final title = extra['title'] as String? ?? '';
+                  return SectionPlaceholderScreen(
+                    key: state.pageKey,
+                    title: title,
+                  );
+                },
+              ),
+              // Solved Exercises → lesson list for the subject
+              GoRoute(
+                path: '/levels/:levelId/subjects/:subjectId/solved-exercises',
+                builder: (context, state) {
+                  final levelId = Uri.decodeComponent(state.pathParameters['levelId']!);
+                  final subjectId = Uri.decodeComponent(state.pathParameters['subjectId']!);
+                  final extra = state.extra as Map<String, dynamic>? ?? {};
+                  final levelName = extra['levelName'] as String? ?? 'Level';
+                  final subject = extra['subject'] as SubjectModel?;
+
+                  return SolvedExercisesScreen(
+                    key: state.pageKey,
+                    levelId: levelId,
+                    levelName: levelName,
+                    subjectId: subjectId,
+                    subject: subject,
+                  );
+                },
+              ),
+              // Exercises belonging to a specific lesson (Solved Exercises → lesson)
+              GoRoute(
+                path: '/levels/:levelId/subjects/:subjectId/exercises/:lessonId',
+                builder: (context, state) {
+                  final lessonId = Uri.decodeComponent(state.pathParameters['lessonId']!);
+                  final extra = state.extra as Map<String, dynamic>? ?? {};
+                  final lessonTitle = extra['lessonTitle'] as String? ?? '';
+                  return LessonExercisesScreen(
+                    key: state.pageKey,
+                    lessonId: lessonId,
+                    lessonTitle: lessonTitle,
+                  );
+                },
+              ),
+              // Semester exams list (semester passed via query: ?semester=1|2)
+              GoRoute(
+                path: '/levels/:levelId/subjects/:subjectId/exams',
+                builder: (context, state) {
+                  final levelId = Uri.decodeComponent(state.pathParameters['levelId']!);
+                  final subjectId = Uri.decodeComponent(state.pathParameters['subjectId']!);
+                  final extra = state.extra as Map<String, dynamic>? ?? {};
+                  final levelName = extra['levelName'] as String? ?? 'Level';
+                  final subject = extra['subject'] as SubjectModel?;
+                  final semester =
+                      int.tryParse(state.uri.queryParameters['semester'] ?? '1') ?? 1;
+
+                  return SemesterExamsScreen(
+                    key: state.pageKey,
+                    levelId: levelId,
+                    levelName: levelName,
+                    subjectId: subjectId,
+                    semester: semester,
+                    subject: subject,
+                  );
+                },
+              ),
+              // Exam → Models list (each model has exam + correction PDF)
+              GoRoute(
+                path: '/levels/:levelId/subjects/:subjectId/exams/:examId',
+                builder: (context, state) {
+                  final extra = state.extra as Map<String, dynamic>? ?? {};
+                  final exam = extra['exam'] as ExamModel?;
+                  if (exam == null) {
+                    // No exam payload (e.g. cold deep-link) — show placeholder.
+                    return const SectionPlaceholderScreen(title: '');
+                  }
+                  return ExamModelsScreen(key: state.pageKey, exam: exam);
                 },
               ),
               // Level → Subject → Lessons screen

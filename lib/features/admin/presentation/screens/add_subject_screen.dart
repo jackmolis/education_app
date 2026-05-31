@@ -73,7 +73,6 @@ class _AddSubjectScreenState extends ConsumerState<AddSubjectScreen> {
       }
 
       final subjectData = {
-        'name': _nameArController.text.trim(),
         'name_en': _nameEnController.text.trim(),
         'name_fr': _nameFrController.text.trim(),
         'name_ar': _nameArController.text.trim(),

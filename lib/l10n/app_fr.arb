@@ -117,5 +117,49 @@
   },
   "failedToLoadLesson": "Échec du chargement de la leçon",
   "retry": "Réessayer",
-  "next": "Suivant"
+  "next": "Suivant",
+  "selectSection": "Choisissez une section",
+  "sectionLessons": "Cours",
+  "sectionSolvedExercises": "Exercices Corrigés",
+  "sectionExamsSemester1": "Contrôles Semestre 1",
+  "sectionExamsSemester2": "Contrôles Semestre 2",
+  "comingSoon": "Bientôt disponible",
+  "comingSoonDesc": "Cette section sera bientôt disponible.",
+  "exercisesCount": "{count, plural, =0{Aucun exercice} =1{1 exercice} other{{count} exercices}}",
+  "@exercisesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "failedToLoadExercises": "Échec du chargement des exercices",
+  "noExercisesYet": "Aucun Exercice",
+  "exercisesAppearHere": "Les exercices de cette leçon apparaîtront ici bientôt.",
+  "openPdf": "Ouvrir le PDF",
+  "failedToLoadExams": "Échec du chargement des contrôles",
+  "noExamsYet": "Aucun Contrôle",
+  "examsAppearHere": "Les contrôles de cette matière apparaîtront ici bientôt.",
+  "examNumber": "Contrôle {number}",
+  "@examNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "openExamPdf": "Ouvrir le contrôle (PDF)",
+  "openCorrectionPdf": "Ouvrir la correction (PDF)",
+  "examModels": "Modèles",
+  "failedToLoadExamModels": "Échec du chargement des modèles",
+  "noExamModelsYet": "Aucun Modèle",
+  "examModelsAppearHere": "Les modèles de ce contrôle apparaîtront ici bientôt.",
+  "modelNumber": "Modèle {number}",
+  "@modelNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -8,7 +8,6 @@ import 'package:nexora_academy/l10n/app_localizations.dart';
 class LessonTabsSection extends ConsumerStatefulWidget {
   final String lessonId;
   final String? description;
-  final String? content;
   final bool hasPdf;
   final VoidCallback? onOpenPdf;
 
@@ -16,7 +15,6 @@ class LessonTabsSection extends ConsumerStatefulWidget {
     super.key,
     required this.lessonId,
     this.description,
-    this.content,
     this.hasPdf = false,
     this.onOpenPdf,
   });
@@ -83,7 +81,6 @@ class _LessonTabsSectionState extends ConsumerState<LessonTabsSection>
             controller: _tabController,
             children: [
               _OverviewTab(
-                content: widget.content,
                 description: widget.description,
                 isDark: isDark,
               ),
@@ -107,23 +104,19 @@ class _LessonTabsSectionState extends ConsumerState<LessonTabsSection>
 // ── Overview Tab ──────────────────────────────────────────────────
 
 class _OverviewTab extends StatelessWidget {
-  final String? content;
   final String? description;
   final bool isDark;
 
   const _OverviewTab({
-    this.content,
     this.description,
     required this.isDark,
   });
 
   @override
   Widget build(BuildContext context) {
-    final text = content?.isNotEmpty == true
-        ? content!
-        : description?.isNotEmpty == true
-            ? description!
-            : AppLocalizations.of(context)!.noContentAvailable;
+    final text = description?.isNotEmpty == true
+        ? description!
+        : AppLocalizations.of(context)!.noContentAvailable;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),

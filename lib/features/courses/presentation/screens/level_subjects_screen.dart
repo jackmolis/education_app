@@ -134,7 +134,7 @@ class LevelSubjectsScreen extends ConsumerWidget {
                               index: index,
                               onTap: () {
                                 context.push(
-                                  '/levels/${Uri.encodeComponent(levelId)}/subjects/${Uri.encodeComponent(subject.id)}/lessons',
+                                  '/levels/${Uri.encodeComponent(levelId)}/subjects/${Uri.encodeComponent(subject.id)}/sections',
                                   extra: {
                                     'levelName': levelName,
                                     'subject': subject,

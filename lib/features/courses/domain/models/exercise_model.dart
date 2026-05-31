@@ -1,37 +1,32 @@
-class LessonModel {
+class ExerciseModel {
   final String id;
-  final String subjectId;
+  final String lessonId;
   final String? titleEn;
   final String? titleFr;
   final String? titleAr;
   final String? descriptionEn;
   final String? descriptionFr;
   final String? descriptionAr;
-  final String videoUrl;
   final String pdfUrl;
-  final int? duration;
   final int orderNumber;
   final DateTime? createdAt;
 
-  LessonModel({
+  ExerciseModel({
     required this.id,
-    required this.subjectId,
+    required this.lessonId,
     this.titleEn,
     this.titleFr,
     this.titleAr,
     this.descriptionEn,
     this.descriptionFr,
     this.descriptionAr,
-    required this.videoUrl,
     required this.pdfUrl,
-    this.duration,
     required this.orderNumber,
     this.createdAt,
   });
 
-  /// Localized title. Picks the column for [locale]; if that language is
-  /// empty it falls back to the other localized columns (fr → en → ar order
-  /// is intentional so something always renders), else empty string.
+  /// Localized title. Picks the column for [locale]; if empty, falls back to
+  /// the other localized columns so something always renders.
   String getTitle(String locale) {
     switch (locale) {
       case 'ar':
@@ -55,6 +50,8 @@ class LessonModel {
     }
   }
 
+  bool get hasPdf => pdfUrl.isNotEmpty;
+
   static String _firstNonEmpty(List<String?> values) {
     for (final v in values) {
       if (v != null && v.isNotEmpty) return v;
@@ -62,39 +59,7 @@ class LessonModel {
     return '';
   }
 
-  LessonModel copyWith({
-    String? id,
-    String? subjectId,
-    String? titleEn,
-    String? titleFr,
-    String? titleAr,
-    String? descriptionEn,
-    String? descriptionFr,
-    String? descriptionAr,
-    String? videoUrl,
-    String? pdfUrl,
-    int? duration,
-    int? orderNumber,
-    DateTime? createdAt,
-  }) {
-    return LessonModel(
-      id: id ?? this.id,
-      subjectId: subjectId ?? this.subjectId,
-      titleEn: titleEn ?? this.titleEn,
-      titleFr: titleFr ?? this.titleFr,
-      titleAr: titleAr ?? this.titleAr,
-      descriptionEn: descriptionEn ?? this.descriptionEn,
-      descriptionFr: descriptionFr ?? this.descriptionFr,
-      descriptionAr: descriptionAr ?? this.descriptionAr,
-      videoUrl: videoUrl ?? this.videoUrl,
-      pdfUrl: pdfUrl ?? this.pdfUrl,
-      duration: duration ?? this.duration,
-      orderNumber: orderNumber ?? this.orderNumber,
-      createdAt: createdAt ?? this.createdAt,
-    );
-  }
-
-  factory LessonModel.fromJson(Map<String, dynamic> json) {
+  factory ExerciseModel.fromJson(Map<String, dynamic> json) {
     DateTime? created;
     final rawCreated = json['created_at'];
     if (rawCreated is String) {
@@ -109,26 +74,16 @@ class LessonModel {
       order = rawOrder.toInt();
     }
 
-    int? dur;
-    final rawDur = json['duration'];
-    if (rawDur is int) {
-      dur = rawDur;
-    } else if (rawDur is num) {
-      dur = rawDur.toInt();
-    }
-
-    return LessonModel(
+    return ExerciseModel(
       id: json['id'].toString(),
-      subjectId: json['subject_id']?.toString() ?? '',
+      lessonId: json['lesson_id']?.toString() ?? '',
       titleEn: json['title_en'] as String?,
       titleFr: json['title_fr'] as String?,
       titleAr: json['title_ar'] as String?,
       descriptionEn: json['description_en'] as String?,
       descriptionFr: json['description_fr'] as String?,
       descriptionAr: json['description_ar'] as String?,
-      videoUrl: json['video_url'] as String? ?? '',
       pdfUrl: json['pdf_url'] as String? ?? '',
-      duration: dur,
       orderNumber: order,
       createdAt: created,
     );
@@ -137,16 +92,14 @@ class LessonModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'subject_id': subjectId,
+      'lesson_id': lessonId,
       if (titleEn != null) 'title_en': titleEn,
       if (titleFr != null) 'title_fr': titleFr,
       if (titleAr != null) 'title_ar': titleAr,
       if (descriptionEn != null) 'description_en': descriptionEn,
       if (descriptionFr != null) 'description_fr': descriptionFr,
       if (descriptionAr != null) 'description_ar': descriptionAr,
-      'video_url': videoUrl,
       'pdf_url': pdfUrl,
-      if (duration != null) 'duration': duration,
       'order_number': orderNumber,
       if (createdAt != null) 'created_at': createdAt!.toIso8601String(),
     };

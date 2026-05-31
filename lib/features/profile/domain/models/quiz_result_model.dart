@@ -23,8 +23,11 @@ class QuizResultModel {
       userId: json['user_id']?.toString() ?? '',
       lessonId: json['lesson_id']?.toString() ?? '',
       // Handle the join from lessons table if available, else fallback securely
-      lessonTitle:
-          json['lessons']?['title']?.toString() ??
+      lessonTitle: _firstNonEmpty([
+            json['lessons']?['title_en'],
+            json['lessons']?['title_fr'],
+            json['lessons']?['title_ar'],
+          ]) ??
           'Lesson ${json['lesson_id']}',
       score: (json['score'] as num?)?.toInt() ?? 0,
       total: (json['total'] as num?)?.toInt() ?? 0,
@@ -43,5 +46,14 @@ class QuizResultModel {
       'total': total,
       'created_at': createdAt.toIso8601String(),
     };
+  }
+
+  /// Returns the first non-empty localized value, or null if all are empty.
+  static String? _firstNonEmpty(List<dynamic> values) {
+    for (final v in values) {
+      final s = v?.toString() ?? '';
+      if (s.isNotEmpty) return s;
+    }
+    return null;
   }
 }

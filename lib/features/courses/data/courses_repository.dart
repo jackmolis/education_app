@@ -49,7 +49,7 @@ class CoursesRepository {
     
     try {
       debugPrint('Fetching subjects from Supabase...');
-      final data = await _supabase.from('subjects').select('id, name, description, image_url, created_at');
+      final data = await _supabase.from('subjects').select('id, name_en, name_fr, name_ar, description, image_url, level_id, created_at');
       debugPrint('Subjects fetched successfully: ${data.length} items');
       
       _cachedSubjects = (data as List)

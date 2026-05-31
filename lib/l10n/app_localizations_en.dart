@@ -329,4 +329,88 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get next => 'Next';
+
+  @override
+  String get selectSection => 'Select a section';
+
+  @override
+  String get sectionLessons => 'Lessons';
+
+  @override
+  String get sectionSolvedExercises => 'Solved Exercises';
+
+  @override
+  String get sectionExamsSemester1 => 'Semester 1 Exams';
+
+  @override
+  String get sectionExamsSemester2 => 'Semester 2 Exams';
+
+  @override
+  String get comingSoon => 'Coming Soon';
+
+  @override
+  String get comingSoonDesc => 'This section will be available soon.';
+
+  @override
+  String exercisesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count exercises',
+      one: '1 exercise',
+      zero: 'No exercises',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get failedToLoadExercises => 'Failed to load exercises';
+
+  @override
+  String get noExercisesYet => 'No Exercises Yet';
+
+  @override
+  String get exercisesAppearHere =>
+      'Exercises for this lesson will appear here soon.';
+
+  @override
+  String get openPdf => 'Open PDF';
+
+  @override
+  String get failedToLoadExams => 'Failed to load exams';
+
+  @override
+  String get noExamsYet => 'No Exams Yet';
+
+  @override
+  String get examsAppearHere => 'Exams for this subject will appear here soon.';
+
+  @override
+  String examNumber(int number) {
+    return 'Exam $number';
+  }
+
+  @override
+  String get openExamPdf => 'Open Exam PDF';
+
+  @override
+  String get openCorrectionPdf => 'Open Correction PDF';
+
+  @override
+  String get examModels => 'Models';
+
+  @override
+  String get failedToLoadExamModels => 'Failed to load models';
+
+  @override
+  String get noExamModelsYet => 'No Models Yet';
+
+  @override
+  String get examModelsAppearHere =>
+      'Models for this exam will appear here soon.';
+
+  @override
+  String modelNumber(int number) {
+    return 'Model $number';
+  }
 }

@@ -86,7 +86,6 @@ class _ContinueLearningCardState extends ConsumerState<ContinueLearningCard>
           (s) => s.id == videoProgress.subjectId,
           orElse: () => SubjectModel(
             id: '',
-            name: 'Unknown',
             nameEn: 'Unknown',
             nameFr: 'Unknown',
             nameAr: 'Unknown',

@@ -37,16 +37,6 @@ class AdminRepository {
     }
   }
 
-  Future<void> addSubject(String name) async {
-    try {
-      await _supabaseClient
-          .from('subjects')
-          .insert({'name': name});
-    } catch (e) {
-      throw Exception('Failed to add subject: $e');
-    }
-  }
-
   Future<String> uploadSubjectImageBytes(Uint8List bytes, String extension) async {
     const bucketId = 'subjects';
     final safeExt = extension.replaceAll('.', '').toLowerCase();
@@ -116,7 +106,7 @@ class AdminRepository {
       final data = await _supabaseClient
           .from('lessons')
           .select(
-            'id, subject_id, title_en, title_fr, title_ar, video_url, pdf_url, order_number, created_at',
+            'id, subject_id, title_en, title_fr, title_ar, description_en, description_fr, description_ar, video_url, pdf_url, duration, order_number, created_at',
           )
           .order('subject_id', ascending: true)
           .order('order_number', ascending: true);
@@ -135,7 +125,7 @@ class AdminRepository {
   }) async {
     try {
       dynamic query = _supabaseClient.from('lessons').select(
-            'id, subject_id, title_en, title_fr, title_ar, video_url, pdf_url, order_number, created_at',
+            'id, subject_id, title_en, title_fr, title_ar, description_en, description_fr, description_ar, video_url, pdf_url, duration, order_number, created_at',
           );
 
       if (subjectId != null && subjectId.isNotEmpty) {

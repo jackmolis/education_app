@@ -117,5 +117,49 @@
   },
   "failedToLoadLesson": "فشل في تحميل الدرس",
   "retry": "إعادة المحاولة",
-  "next": "التالي"
+  "next": "التالي",
+  "selectSection": "اختر قسماً",
+  "sectionLessons": "الدروس",
+  "sectionSolvedExercises": "التمارين المحلولة",
+  "sectionExamsSemester1": "فروض الدورة الأولى",
+  "sectionExamsSemester2": "فروض الدورة الثانية",
+  "comingSoon": "قريباً",
+  "comingSoonDesc": "سيكون هذا القسم متاحاً قريباً.",
+  "exercisesCount": "{count, plural, =0{لا توجد تمارين} =1{تمرين واحد} =2{تمرينان} few{{count} تمارين} other{{count} تمريناً}}",
+  "@exercisesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "failedToLoadExercises": "فشل في تحميل التمارين",
+  "noExercisesYet": "لا توجد تمارين بعد",
+  "exercisesAppearHere": "ستظهر تمارين هذا الدرس هنا قريباً.",
+  "openPdf": "فتح ملف PDF",
+  "failedToLoadExams": "فشل في تحميل الفروض",
+  "noExamsYet": "لا توجد فروض بعد",
+  "examsAppearHere": "ستظهر فروض هذه المادة هنا قريباً.",
+  "examNumber": "الفرض {number}",
+  "@examNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "openExamPdf": "فتح الفرض (PDF)",
+  "openCorrectionPdf": "فتح التصحيح (PDF)",
+  "examModels": "النماذج",
+  "failedToLoadExamModels": "فشل في تحميل النماذج",
+  "noExamModelsYet": "لا توجد نماذج بعد",
+  "examModelsAppearHere": "ستظهر نماذج هذا الفرض هنا قريباً.",
+  "modelNumber": "النموذج {number}",
+  "@modelNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  }
 }
