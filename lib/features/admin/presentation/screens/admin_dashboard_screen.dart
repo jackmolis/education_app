@@ -19,6 +19,17 @@ class AdminDashboardScreen extends ConsumerWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isTablet = screenWidth > 600;
 
+    // Quick Actions phone grid: derive a per-cell aspect ratio from the real
+    // cell width so each card gets enough vertical room for its content
+    // (icon bubble + label) — prevents the inner Column from overflowing
+    // without hard-coding a card height.
+    const _quickActionHPadding = 20.0; // matches the section Padding
+    const _quickActionSpacing = 12.0;
+    final _quickCellWidth =
+        (screenWidth - (_quickActionHPadding * 2) - _quickActionSpacing) / 2;
+    const _quickCellHeight = 116.0;
+    final _quickActionAspectRatio = _quickCellWidth / _quickCellHeight;
+
     return AppScaffold(
       backgroundColor: theme.colorScheme.surface,
       body: RefreshIndicator(
@@ -143,36 +154,80 @@ class AdminDashboardScreen extends ConsumerWidget {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _QuickActionCard(
-                        title: 'Subject',
-                        icon: Icons.add_circle_outline_rounded,
-                        gradient: const [Color(0xFFFF6B35), Color(0xFFFF8F65)],
-                        onTap: () => context.push('/admin/add-subject'),
+                child: isTablet
+                    ? Row(
+                        children: [
+                          Expanded(
+                            child: _QuickActionCard(
+                              title: 'Subject',
+                              icon: Icons.add_circle_outline_rounded,
+                              gradient: const [Color(0xFFFF6B35), Color(0xFFFF8F65)],
+                              onTap: () => context.push('/admin/add-subject'),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _QuickActionCard(
+                              title: 'Lesson',
+                              icon: Icons.video_call_rounded,
+                              gradient: const [Color(0xFF0EA5E9), Color(0xFF38BDF8)],
+                              onTap: () => context.push('/admin/add-lesson'),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _QuickActionCard(
+                              title: 'Exam',
+                              icon: Icons.assignment_add,
+                              gradient: const [Color(0xFFEC4899), Color(0xFFF472B6)],
+                              onTap: () => context.push('/admin/add-exam'),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _QuickActionCard(
+                              title: 'Quiz',
+                              icon: Icons.post_add_rounded,
+                              gradient: const [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
+                              onTap: () => context.push('/admin/add-quiz'),
+                            ),
+                          ),
+                        ],
+                      )
+                    : GridView.count(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        childAspectRatio: _quickActionAspectRatio,
+                        children: [
+                          _QuickActionCard(
+                            title: 'Subject',
+                            icon: Icons.add_circle_outline_rounded,
+                            gradient: const [Color(0xFFFF6B35), Color(0xFFFF8F65)],
+                            onTap: () => context.push('/admin/add-subject'),
+                          ),
+                          _QuickActionCard(
+                            title: 'Lesson',
+                            icon: Icons.video_call_rounded,
+                            gradient: const [Color(0xFF0EA5E9), Color(0xFF38BDF8)],
+                            onTap: () => context.push('/admin/add-lesson'),
+                          ),
+                          _QuickActionCard(
+                            title: 'Exam',
+                            icon: Icons.assignment_add,
+                            gradient: const [Color(0xFFEC4899), Color(0xFFF472B6)],
+                            onTap: () => context.push('/admin/add-exam'),
+                          ),
+                          _QuickActionCard(
+                            title: 'Quiz',
+                            icon: Icons.post_add_rounded,
+                            gradient: const [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
+                            onTap: () => context.push('/admin/add-quiz'),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _QuickActionCard(
-                        title: 'Lesson',
-                        icon: Icons.video_call_rounded,
-                        gradient: const [Color(0xFF0EA5E9), Color(0xFF38BDF8)],
-                        onTap: () => context.push('/admin/add-lesson'),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _QuickActionCard(
-                        title: 'Quiz',
-                        icon: Icons.post_add_rounded,
-                        gradient: const [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
-                        onTap: () => context.push('/admin/add-quiz'),
-                      ),
-                    ),
-                  ],
-                ),
               ),
             ),
 
@@ -225,6 +280,14 @@ class AdminDashboardScreen extends ConsumerWidget {
                     icon: Icons.rule_rounded,
                     accentColor: const Color(0xFF8B5CF6),
                     onTap: () => context.push('/admin/manage-quizzes'),
+                  ),
+                  const SizedBox(height: 12),
+                  _ManagementCard(
+                    title: 'Manage Exams',
+                    subtitle: 'Exams, semesters and PDF models',
+                    icon: Icons.assignment_rounded,
+                    accentColor: const Color(0xFFEC4899),
+                    onTap: () => context.push('/admin/manage-exams'),
                   ),
                 ]),
               ),
@@ -741,7 +804,7 @@ class _QuickActionCardState extends State<_QuickActionCard> {
         scale: _pressed ? 0.95 : 1.0,
         duration: const Duration(milliseconds: 150),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 20),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
             color: isDark
                 ? Colors.white.withOpacity(0.05)
@@ -763,6 +826,7 @@ class _QuickActionCardState extends State<_QuickActionCard> {
                   ],
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
@@ -975,3 +1039,4 @@ class _ErrorCard extends StatelessWidget {
     );
   }
 }
+

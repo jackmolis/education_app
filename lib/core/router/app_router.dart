@@ -21,6 +21,9 @@ import '../../features/admin/presentation/screens/add_quiz_screen.dart';
 import '../../features/admin/presentation/screens/manage_subjects_screen.dart';
 import '../../features/admin/presentation/screens/manage_lessons_screen.dart';
 import '../../features/admin/presentation/screens/manage_quizzes_screen.dart';
+import '../../features/admin/presentation/screens/manage_exams_screen.dart';
+import '../../features/admin/presentation/screens/add_exam_screen.dart';
+import '../../features/admin/presentation/screens/manage_exam_models_screen.dart';
 import '../../features/notifications/presentation/screens/notifications_screen.dart';
 import '../../features/courses/domain/models/lesson_model.dart';
 import '../../features/courses/domain/models/subject_model.dart';
@@ -475,6 +478,27 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: 'add-quiz',
             builder: (context, state) => AddQuizScreen(key: state.pageKey),
+          ),
+          GoRoute(
+            path: 'manage-exams',
+            builder: (context, state) => ManageExamsScreen(key: state.pageKey),
+          ),
+          GoRoute(
+            path: 'add-exam',
+            builder: (context, state) {
+              final exam = state.extra as ExamModel?;
+              return AddExamScreen(key: state.pageKey, examToEdit: exam);
+            },
+          ),
+          GoRoute(
+            path: 'exam-models',
+            builder: (context, state) {
+              final exam = state.extra as ExamModel?;
+              if (exam == null) {
+                return const SectionPlaceholderScreen(title: '');
+              }
+              return ManageExamModelsScreen(key: state.pageKey, exam: exam);
+            },
           ),
         ],
       ),

@@ -253,4 +253,152 @@ class AdminRepository {
       throw Exception('Failed to delete quiz: $e');
     }
   }
+
+  // ═══════════════════════════════════════════════════════════════
+  // Exams
+  // ═══════════════════════════════════════════════════════════════
+
+  static const String _examSelectCols =
+      'id, subject_id, semester, title_en, title_fr, title_ar, '
+      'description_en, description_fr, description_ar, order_number, created_at';
+
+  /// All exams for a subject + semester (admin view), ordered by order_number.
+  Future<List<Map<String, dynamic>>> getExamsForAdmin({
+    String? subjectId,
+    int? semester,
+  }) async {
+    try {
+      dynamic query = _supabaseClient.from('exams').select(_examSelectCols);
+      if (subjectId != null && subjectId.isNotEmpty) {
+        query = query.eq('subject_id', subjectId);
+      }
+      if (semester != null) {
+        query = query.eq('semester', semester);
+      }
+      final data = await query.order('order_number', ascending: true);
+      return List<Map<String, dynamic>>.from(data as List);
+    } catch (e) {
+      throw Exception('Failed to fetch exams: $e');
+    }
+  }
+
+  Future<int> getNextExamOrderNumber(String subjectId, int semester) async {
+    try {
+      final res = await _supabaseClient
+          .from('exams')
+          .select('order_number')
+          .eq('subject_id', subjectId)
+          .eq('semester', semester)
+          .order('order_number', ascending: false)
+          .limit(1);
+      if (res.isEmpty) return 1;
+      final maxOrder = res.first['order_number'] as int?;
+      return (maxOrder ?? 0) + 1;
+    } catch (e) {
+      throw Exception('Failed to get next exam order number: $e');
+    }
+  }
+
+  Future<void> addExam(Map<String, dynamic> examData) async {
+    try {
+      await _supabaseClient.from('exams').insert(examData);
+    } catch (e) {
+      throw Exception('Failed to add exam: $e');
+    }
+  }
+
+  /// Inserts an exam and returns the created row (so the caller can open its
+  /// models screen). Returns null if the insert returned nothing.
+  Future<Map<String, dynamic>?> addExamReturning(
+      Map<String, dynamic> examData) async {
+    try {
+      final inserted = await _supabaseClient
+          .from('exams')
+          .insert(examData)
+          .select(_examSelectCols)
+          .maybeSingle();
+      return inserted;
+    } catch (e) {
+      throw Exception('Failed to add exam: $e');
+    }
+  }
+
+  Future<void> updateExam(String examId, Map<String, dynamic> data) async {
+    try {
+      await _supabaseClient.from('exams').update(data).eq('id', examId);
+    } catch (e) {
+      throw Exception('Failed to update exam: $e');
+    }
+  }
+
+  Future<void> deleteExam(String examId) async {
+    try {
+      // Remove child models first to avoid orphaned rows.
+      await _supabaseClient.from('exam_models').delete().eq('exam_id', examId);
+      await _supabaseClient.from('exams').delete().eq('id', examId);
+    } catch (e) {
+      throw Exception('Failed to delete exam: $e');
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // Exam Models
+  // ═══════════════════════════════════════════════════════════════
+
+  static const String _examModelSelectCols =
+      'id, exam_id, model_number, title_en, title_fr, title_ar, '
+      'exam_pdf_url, correction_pdf_url, created_at';
+
+  Future<List<Map<String, dynamic>>> getExamModelsForAdmin(String examId) async {
+    try {
+      final data = await _supabaseClient
+          .from('exam_models')
+          .select(_examModelSelectCols)
+          .eq('exam_id', examId)
+          .order('model_number', ascending: true);
+      return List<Map<String, dynamic>>.from(data as List);
+    } catch (e) {
+      throw Exception('Failed to fetch exam models: $e');
+    }
+  }
+
+  Future<int> getNextModelNumber(String examId) async {
+    try {
+      final res = await _supabaseClient
+          .from('exam_models')
+          .select('model_number')
+          .eq('exam_id', examId)
+          .order('model_number', ascending: false)
+          .limit(1);
+      if (res.isEmpty) return 1;
+      final maxNumber = res.first['model_number'] as int?;
+      return (maxNumber ?? 0) + 1;
+    } catch (e) {
+      throw Exception('Failed to get next model number: $e');
+    }
+  }
+
+  Future<void> addExamModel(Map<String, dynamic> modelData) async {
+    try {
+      await _supabaseClient.from('exam_models').insert(modelData);
+    } catch (e) {
+      throw Exception('Failed to add exam model: $e');
+    }
+  }
+
+  Future<void> updateExamModel(String modelId, Map<String, dynamic> data) async {
+    try {
+      await _supabaseClient.from('exam_models').update(data).eq('id', modelId);
+    } catch (e) {
+      throw Exception('Failed to update exam model: $e');
+    }
+  }
+
+  Future<void> deleteExamModel(String modelId) async {
+    try {
+      await _supabaseClient.from('exam_models').delete().eq('id', modelId);
+    } catch (e) {
+      throw Exception('Failed to delete exam model: $e');
+    }
+  }
 }
