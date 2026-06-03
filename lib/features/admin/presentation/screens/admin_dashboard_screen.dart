@@ -186,9 +186,18 @@ class AdminDashboardScreen extends ConsumerWidget {
                           const SizedBox(width: 12),
                           Expanded(
                             child: _QuickActionCard(
+                              title: 'Exam Model',
+                              icon: Icons.folder_copy_rounded,
+                              gradient: const [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
+                              onTap: () => context.push('/admin/add-exam-model'),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _QuickActionCard(
                               title: 'Quiz',
                               icon: Icons.post_add_rounded,
-                              gradient: const [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
+                              gradient: const [Color(0xFF0EA5E9), Color(0xFF38BDF8)],
                               onTap: () => context.push('/admin/add-quiz'),
                             ),
                           ),
@@ -221,9 +230,15 @@ class AdminDashboardScreen extends ConsumerWidget {
                             onTap: () => context.push('/admin/add-exam'),
                           ),
                           _QuickActionCard(
+                            title: 'Exam Model',
+                            icon: Icons.folder_copy_rounded,
+                            gradient: const [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
+                            onTap: () => context.push('/admin/add-exam-model'),
+                          ),
+                          _QuickActionCard(
                             title: 'Quiz',
                             icon: Icons.post_add_rounded,
-                            gradient: const [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
+                            gradient: const [Color(0xFF0EA5E9), Color(0xFF38BDF8)],
                             onTap: () => context.push('/admin/add-quiz'),
                           ),
                         ],

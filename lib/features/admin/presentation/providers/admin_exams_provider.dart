@@ -17,6 +17,15 @@ final adminExamsProvider =
   return raw.map((json) => ExamModel.fromJson(json)).toList();
 });
 
+/// Flat list of ALL exams (no filter) — used for the exam-selector dropdown
+/// in the Add/Edit Exam Model screen.
+final allExamsForSelectorProvider =
+    FutureProvider<List<ExamModel>>((ref) async {
+  final repo = ref.watch(adminRepositoryProvider);
+  final raw = await repo.getExamsForAdmin();
+  return raw.map((json) => ExamModel.fromJson(json)).toList();
+});
+
 /// Models belonging to an exam (admin management screen).
 final adminExamModelsProvider =
     FutureProvider.family<List<ExamModelEntity>, String>((ref, examId) async {

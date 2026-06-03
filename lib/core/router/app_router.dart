@@ -24,6 +24,7 @@ import '../../features/admin/presentation/screens/manage_quizzes_screen.dart';
 import '../../features/admin/presentation/screens/manage_exams_screen.dart';
 import '../../features/admin/presentation/screens/add_exam_screen.dart';
 import '../../features/admin/presentation/screens/manage_exam_models_screen.dart';
+import '../../features/admin/presentation/screens/add_exam_model_screen.dart';
 import '../../features/notifications/presentation/screens/notifications_screen.dart';
 import '../../features/courses/domain/models/lesson_model.dart';
 import '../../features/courses/domain/models/subject_model.dart';
@@ -35,6 +36,7 @@ import '../../features/courses/presentation/screens/lesson_exercises_screen.dart
 import '../../features/courses/presentation/screens/semester_exams_screen.dart';
 import '../../features/courses/presentation/screens/exam_models_screen.dart';
 import '../../features/courses/domain/models/exam_model.dart';
+import '../../features/courses/domain/models/exam_model_entity.dart';
 import '../../features/courses/presentation/screens/primary_levels_screen.dart';
 import '../../features/courses/presentation/screens/middle_levels_screen.dart';
 import '../../features/courses/presentation/screens/high_levels_screen.dart';
@@ -498,6 +500,32 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 return const SectionPlaceholderScreen(title: '');
               }
               return ManageExamModelsScreen(key: state.pageKey, exam: exam);
+            },
+          ),
+          GoRoute(
+            path: 'add-exam-model',
+            builder: (context, state) {
+              // extra can be:
+              //   null                  → Add mode, no preselected exam
+              //   ExamModel             → Add mode with preselected exam
+              //   ExamModelEntity       → Edit mode (no exam locked)
+              //   Map with both keys    → Edit mode with preselected exam
+              final extra = state.extra;
+              ExamModelEntity? modelToEdit;
+              ExamModel? preselectedExam;
+              if (extra is Map<String, dynamic>) {
+                modelToEdit = extra['model'] as ExamModelEntity?;
+                preselectedExam = extra['exam'] as ExamModel?;
+              } else if (extra is ExamModelEntity) {
+                modelToEdit = extra;
+              } else if (extra is ExamModel) {
+                preselectedExam = extra;
+              }
+              return AddExamModelScreen(
+                key: state.pageKey,
+                modelToEdit: modelToEdit,
+                preselectedExam: preselectedExam,
+              );
             },
           ),
         ],

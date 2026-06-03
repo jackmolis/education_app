@@ -1,0 +1,291 @@
+Folder PATH listing
+Volume serial number is 00000028 942F:9082
+C:\USERS\ZOBIR\FLUTTER_PROJECTS\NEXORA_ACADEMY\LIB
+³   main.dart
+³   
+ÃÄÄÄcore
+³   ÃÄÄÄconstants
+³   ÃÄÄÄproviders
+³   ³       appbar_provider.dart
+³   ³       connectivity_provider.dart
+³   ³       fullscreen_provider.dart
+³   ³       locale_provider.dart
+³   ³       theme_provider.dart
+³   ³       
+³   ÃÄÄÄrouter
+³   ³       app_router.dart
+³   ³       
+³   ÃÄÄÄtheme
+³   ³       app_theme.dart
+³   ³       
+³   ÃÄÄÄutils
+³   ³       localization_helper.dart
+³   ³       
+³   ÀÄÄÄwidgets
+³           animated_counter.dart
+³           app_scaffold.dart
+³           empty_state_widget.dart
+³           language_selector_widget.dart
+³           language_switcher.dart
+³           shimmer_loaders.dart
+³           smart_math_view.dart
+³           tap_scale_wrapper.dart
+³           
+ÃÄÄÄfeatures
+³   ÃÄÄÄadmin
+³   ³   ÃÄÄÄdata
+³   ³   ³       admin_analytics_service.dart
+³   ³   ³       admin_providers.dart
+³   ³   ³       admin_repository.dart
+³   ³   ³       realtime_repository.dart
+³   ³   ³       
+³   ³   ÃÄÄÄdomain
+³   ³   ³       admin_analytics_model.dart
+³   ³   ³       admin_quiz_summary_model.dart
+³   ³   ³       live_activity_model.dart
+³   ³   ³       
+³   ³   ÀÄÄÄpresentation
+³   ³       ÃÄÄÄproviders
+³   ³       ³       add_lesson_provider.dart
+³   ³       ³       admin_exams_provider.dart
+³   ³       ³       admin_stats_provider.dart
+³   ³       ³       manage_quizzes_provider.dart
+³   ³       ³       paginated_admin_lessons_provider.dart
+³   ³       ³       paginated_admin_quizzes_provider.dart
+³   ³       ³       realtime_provider.dart
+³   ³       ³       
+³   ³       ÃÄÄÄscreens
+³   ³       ³       add_exam_model_screen.dart
+³   ³       ³       add_exam_screen.dart
+³   ³       ³       add_lesson_screen.dart
+³   ³       ³       add_quiz_screen.dart
+³   ³       ³       add_subject_screen.dart
+³   ³       ³       admin_dashboard_screen.dart
+³   ³       ³       manage_exams_screen.dart
+³   ³       ³       manage_exam_models_screen.dart
+³   ³       ³       manage_lessons_screen.dart
+³   ³       ³       manage_quizzes_screen.dart
+³   ³       ³       manage_subjects_screen.dart
+³   ³       ³       
+³   ³       ÀÄÄÄwidgets
+³   ³               admin_quiz_preview_screen.dart
+³   ³               advanced_math_modal.dart
+³   ³               live_activity_section.dart
+³   ³               math_editor.dart
+³   ³               subject_category_selector.dart
+³   ³               
+³   ÃÄÄÄauthentication
+³   ³   ÃÄÄÄdata
+³   ³   ³       supabase_auth_repository.dart
+³   ³   ³       
+³   ³   ÃÄÄÄdomain
+³   ³   ³       auth_repository.dart
+³   ³   ³       
+³   ³   ÀÄÄÄpresentation
+³   ³       ÃÄÄÄcontrollers
+³   ³       ³       auth_controller.dart
+³   ³       ³       
+³   ³       ÀÄÄÄscreens
+³   ³               login_screen.dart
+³   ³               register_screen.dart
+³   ³               
+³   ÃÄÄÄcourses
+³   ³   ÃÄÄÄdata
+³   ³   ³       courses_repository.dart
+³   ³   ³       exams_repository.dart
+³   ³   ³       exercises_repository.dart
+³   ³   ³       progress_repository.dart
+³   ³   ³       storage_repository.dart
+³   ³   ³       subjects_repository.dart
+³   ³   ³       
+³   ³   ÃÄÄÄdomain
+³   ³   ³   ÀÄÄÄmodels
+³   ³   ³           exam_model.dart
+³   ³   ³           exam_model_entity.dart
+³   ³   ³           exercise_model.dart
+³   ³   ³           lesson_model.dart
+³   ³   ³           level_model.dart
+³   ³   ³           level_subject_model.dart
+³   ³   ³           subject_model.dart
+³   ³   ³           user_progress_model.dart
+³   ³   ³           
+³   ³   ÀÄÄÄpresentation
+³   ³       ÃÄÄÄproviders
+³   ³       ³       courses_provider.dart
+³   ³       ³       exams_provider.dart
+³   ³       ³       exercises_provider.dart
+³   ³       ³       lesson_details_provider.dart
+³   ³       ³       level_subjects_provider.dart
+³   ³       ³       storage_provider.dart
+³   ³       ³       subjects_provider.dart
+³   ³       ³       
+³   ³       ÃÄÄÄscreens
+³   ³       ³       exam_models_screen.dart
+³   ³       ³       high_levels_screen.dart
+³   ³       ³       high_school_levels_screen.dart
+³   ³       ³       lessons_screen.dart
+³   ³       ³       lesson_details_screen.dart
+³   ³       ³       lesson_exercises_screen.dart
+³   ³       ³       level_subjects_screen.dart
+³   ³       ³       middle_levels_screen.dart
+³   ³       ³       option_selection_screen.dart
+³   ³       ³       pdf_viewer_screen.dart
+³   ³       ³       primary_levels_screen.dart
+³   ³       ³       section_placeholder_screen.dart
+³   ³       ³       semester_exams_screen.dart
+³   ³       ³       solved_exercises_screen.dart
+³   ³       ³       streams_screen.dart
+³   ³       ³       subject_details_screen.dart
+³   ³       ³       subject_sections_screen.dart
+³   ³       ³       
+³   ³       ÀÄÄÄwidgets
+³   ³           ³   lesson_actions_row.dart
+³   ³           ³   lesson_action_buttons.dart
+³   ³           ³   lesson_card.dart
+³   ³           ³   lesson_header.dart
+³   ³           ³   lesson_info_section.dart
+³   ³           ³   lesson_list_header.dart
+³   ³           ³   lesson_progress_bar.dart
+³   ³           ³   lesson_tabs_section.dart
+³   ³           ³   lesson_tile.dart
+³   ³           ³   lesson_video_card.dart
+³   ³           ³   lesson_video_player.dart
+³   ³           ³   lesson_video_section.dart
+³   ³           ³   level_item_widget.dart
+³   ³           ³   quiz_cta.dart
+³   ³           ³   subject_card.dart
+³   ³           ³   
+³   ³           ÀÄÄÄlesson_details
+³   ³                   action_buttons.dart
+³   ³                   lesson_header.dart
+³   ³                   lesson_progress_section.dart
+³   ³                   video_card.dart
+³   ³                   
+³   ÃÄÄÄdashboard
+³   ³   ÀÄÄÄpresentation
+³   ³       ³   dashboard_screen.dart
+³   ³       ³   
+³   ³       ÃÄÄÄscreens
+³   ³       ³       main_shell_screen.dart
+³   ³       ³       
+³   ³       ÀÄÄÄwidgets
+³   ³               continue_learning_card.dart
+³   ³               continue_learning_section.dart
+³   ³               daily_goal_card.dart
+³   ³               recent_lessons_section.dart
+³   ³               streak_xp_card.dart
+³   ³               welcome_header.dart
+³   ³               
+³   ÃÄÄÄdiscussion
+³   ³   ³   discussion_providers.dart
+³   ³   ³   
+³   ³   ÀÄÄÄdata
+³   ³           discussion_repository.dart
+³   ³           
+³   ÃÄÄÄlessons
+³   ÃÄÄÄnotes
+³   ³   ³   notes_providers.dart
+³   ³   ³   
+³   ³   ÃÄÄÄdata
+³   ³   ³       notes_repository.dart
+³   ³   ³       
+³   ³   ÀÄÄÄpresentation
+³   ³           notes_screen.dart
+³   ³           
+³   ÃÄÄÄnotifications
+³   ³   ÃÄÄÄdata
+³   ³   ³       notifications_repository.dart
+³   ³   ³       
+³   ³   ÃÄÄÄdomain
+³   ³   ³   ÀÄÄÄmodels
+³   ³   ³           notification_model.dart
+³   ³   ³           
+³   ³   ÀÄÄÄpresentation
+³   ³       ÃÄÄÄproviders
+³   ³       ³       notifications_provider.dart
+³   ³       ³       
+³   ³       ÀÄÄÄscreens
+³   ³               notifications_screen.dart
+³   ³               
+³   ÃÄÄÄprofile
+³   ³   ÃÄÄÄdata
+³   ³   ³       profile_providers.dart
+³   ³   ³       supabase_profile_repository.dart
+³   ³   ³       
+³   ³   ÃÄÄÄdomain
+³   ³   ³   ³   profile_repository.dart
+³   ³   ³   ³   
+³   ³   ³   ÀÄÄÄmodels
+³   ³   ³           quiz_result_model.dart
+³   ³   ³           user_profile_model.dart
+³   ³   ³           
+³   ³   ÀÄÄÄpresentation
+³   ³       ÃÄÄÄproviders
+³   ³       ³       profile_analytics_provider.dart
+³   ³       ³       
+³   ³       ÃÄÄÄscreens
+³   ³       ³       profile_screen.dart
+³   ³       ³       
+³   ³       ÀÄÄÄwidgets
+³   ³               profile_avatar.dart
+³   ³               profile_stat_card.dart
+³   ³               quiz_result_list_tile.dart
+³   ³               
+³   ÃÄÄÄquizzes
+³   ³   ÃÄÄÄdata
+³   ³   ³       quiz_repository.dart
+³   ³   ³       
+³   ³   ÃÄÄÄdomain
+³   ³   ³       quiz_model.dart
+³   ³   ³       
+³   ³   ÀÄÄÄpresentation
+³   ³       ÃÄÄÄproviders
+³   ³       ³       quiz_provider.dart
+³   ³       ³       
+³   ³       ÀÄÄÄscreens
+³   ³               quizzes_screen.dart
+³   ³               quiz_result_screen.dart
+³   ³               quiz_screen.dart
+³   ³               
+³   ÃÄÄÄstreams
+³   ³   ÃÄÄÄdata
+³   ³   ³       streams_repository.dart
+³   ³   ³       
+³   ³   ÃÄÄÄdomain
+³   ³   ³   ÀÄÄÄmodels
+³   ³   ³           stream_model.dart
+³   ³   ³           
+³   ³   ÀÄÄÄpresentation
+³   ³       ÃÄÄÄproviders
+³   ³       ³       streams_provider.dart
+³   ³       ³       
+³   ³       ÀÄÄÄscreens
+³   ³               streams_screen.dart
+³   ³               stream_selection_screen.dart
+³   ³               
+³   ÀÄÄÄvideo_progress
+³       ÃÄÄÄdata
+³       ³       video_progress_repository.dart
+³       ³       
+³       ÃÄÄÄdomain
+³       ³   ÀÄÄÄmodels
+³       ³           video_progress_model.dart
+³       ³           
+³       ÀÄÄÄpresentation
+³           ÀÄÄÄproviders
+³                   video_progress_provider.dart
+³                   
+ÃÄÄÄl10n
+³       app_ar.arb
+³       app_en.arb
+³       app_fr.arb
+³       app_localizations.dart
+³       app_localizations_ar.dart
+³       app_localizations_en.dart
+³       app_localizations_fr.dart
+³       
+ÀÄÄÄshared
+    ÃÄÄÄservices
+    ÀÄÄÄwidgets
+            app_bar_widget.dart
+            
