@@ -6,12 +6,7 @@ import 'package:nexora_academy/l10n/app_localizations.dart';
 import '../../domain/models/subject_model.dart';
 import '../../../../core/providers/locale_provider.dart';
 
-/// Intermediate screen shown after picking a subject:
-///   Level → Subject → SubjectSectionsScreen → Content
-///
-/// Presents the 4 study sections of a subject. The "Lessons" card routes to
-/// the existing lessons screen; the other three open localized placeholders
-/// until their content pipelines exist.
+/// Level → Subject → SubjectSectionsScreen → Content
 class SubjectSectionsScreen extends ConsumerWidget {
   final String levelId;
   final String levelName;
@@ -57,6 +52,12 @@ class SubjectSectionsScreen extends ConsumerWidget {
         label: loc.sectionExamsSemester2,
         icon: Icons.assignment_turned_in_rounded,
         gradient: const [Color(0xFFEC4899), Color(0xFFF9A8D4)],
+      ),
+      _SectionData(
+        kind: _SectionKind.homeAssignments,
+        label: loc.sectionHomeAssignments,
+        icon: Icons.home_work_rounded,
+        gradient: const [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
       ),
     ];
 
@@ -130,53 +131,49 @@ class SubjectSectionsScreen extends ConsumerWidget {
   }
 
   void _onSectionTap(BuildContext context, _SectionKind kind) {
-    if (kind == _SectionKind.lessons) {
-      // Route to the EXISTING lessons screen, preserving its expected params.
-      context.push(
-        '/levels/${Uri.encodeComponent(levelId)}/subjects/${Uri.encodeComponent(subjectId)}/lessons',
-        extra: {
-          'levelName': levelName,
-          'subject': subject,
-        },
-      );
-      return;
-    }
+    switch (kind) {
+      case _SectionKind.lessons:
+        context.push(
+          '/levels/${Uri.encodeComponent(levelId)}/subjects/${Uri.encodeComponent(subjectId)}/lessons',
+          extra: {'levelName': levelName, 'subject': subject},
+        );
 
-    if (kind == _SectionKind.solvedExercises) {
-      // Solved Exercises → lesson list (then exercises per lesson).
-      context.push(
-        '/levels/${Uri.encodeComponent(levelId)}/subjects/${Uri.encodeComponent(subjectId)}/solved-exercises',
-        extra: {
-          'levelName': levelName,
-          'subject': subject,
-        },
-      );
-      return;
-    }
+      case _SectionKind.solvedExercises:
+        context.push(
+          '/levels/${Uri.encodeComponent(levelId)}/subjects/${Uri.encodeComponent(subjectId)}/solved-exercises',
+          extra: {'levelName': levelName, 'subject': subject},
+        );
 
-    if (kind == _SectionKind.examsSemester1 ||
-        kind == _SectionKind.examsSemester2) {
-      final semester = kind == _SectionKind.examsSemester1 ? 1 : 2;
-      context.push(
-        '/levels/${Uri.encodeComponent(levelId)}/subjects/${Uri.encodeComponent(subjectId)}/exams?semester=$semester',
-        extra: {
-          'levelName': levelName,
-          'subject': subject,
-        },
-      );
-      return;
-    }
+      case _SectionKind.examsSemester1:
+        context.push(
+          '/levels/${Uri.encodeComponent(levelId)}/subjects/${Uri.encodeComponent(subjectId)}/exams?semester=1',
+          extra: {'levelName': levelName, 'subject': subject},
+        );
 
-    // Fallback (should not occur) — show placeholder.
-    final loc = AppLocalizations.of(context)!;
-    context.push(
-      '/section-placeholder',
-      extra: {'title': loc.sectionLessons},
-    );
+      case _SectionKind.examsSemester2:
+        context.push(
+          '/levels/${Uri.encodeComponent(levelId)}/subjects/${Uri.encodeComponent(subjectId)}/exams?semester=2',
+          extra: {'levelName': levelName, 'subject': subject},
+        );
+
+      case _SectionKind.homeAssignments:
+        context.push(
+          '/levels/${Uri.encodeComponent(levelId)}/subjects/${Uri.encodeComponent(subjectId)}/assignments',
+          extra: {'levelName': levelName, 'subject': subject},
+        );
+    }
   }
 }
 
-enum _SectionKind { lessons, solvedExercises, examsSemester1, examsSemester2 }
+// ─── Data types ──────────────────────────────────────────────────────────────
+
+enum _SectionKind {
+  lessons,
+  solvedExercises,
+  examsSemester1,
+  examsSemester2,
+  homeAssignments,
+}
 
 class _SectionData {
   final _SectionKind kind;
@@ -192,10 +189,7 @@ class _SectionData {
   });
 }
 
-// ══════════════════════════════════════════
-// _SectionCard — animated section selector card
-// (mirrors the design language of OptionSelectionScreen)
-// ══════════════════════════════════════════
+// ─── _SectionCard ─────────────────────────────────────────────────────────────
 
 class _SectionCard extends StatefulWidget {
   final String label;
@@ -307,7 +301,7 @@ class _SectionCardState extends State<_SectionCard>
                           ),
                         ),
                         const SizedBox(width: 18),
-                        // Text
+                        // Label
                         Expanded(
                           child: Text(
                             widget.label,

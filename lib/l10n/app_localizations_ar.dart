@@ -411,4 +411,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String modelNumber(int number) {
     return 'النموذج $number';
   }
+
+  @override
+  String get sectionHomeAssignments => 'الفروض المنزلية';
+
+  @override
+  String get failedToLoadAssignments => 'فشل في تحميل الفروض';
+
+  @override
+  String get noAssignmentsYet => 'لا توجد فروض بعد';
+
+  @override
+  String get assignmentsAppearHere => 'ستظهر فروض هذه المادة هنا قريباً.';
 }

@@ -867,6 +867,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Model {number}'**
   String modelNumber(int number);
+
+  /// No description provided for @sectionHomeAssignments.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assignments'**
+  String get sectionHomeAssignments;
+
+  /// No description provided for @failedToLoadAssignments.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load assignments'**
+  String get failedToLoadAssignments;
+
+  /// No description provided for @noAssignmentsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Assignments Yet'**
+  String get noAssignmentsYet;
+
+  /// No description provided for @assignmentsAppearHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Assignments for this subject will appear here soon.'**
+  String get assignmentsAppearHere;
 }
 
 class _AppLocalizationsDelegate

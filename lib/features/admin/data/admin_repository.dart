@@ -401,4 +401,71 @@ class AdminRepository {
       throw Exception('Failed to delete exam model: $e');
     }
   }
+
+  // ═══════════════════════════════════════════════════════════════
+  // Home Assignments
+  // ═══════════════════════════════════════════════════════════════
+
+  static const String _assignmentSelectCols =
+      'id, subject_id, title_en, title_fr, title_ar, '
+      'description_en, description_fr, description_ar, pdf_url, order_number, created_at';
+
+  /// All home assignments, optionally filtered by [subjectId], ordered by order_number.
+  Future<List<Map<String, dynamic>>> getHomeAssignmentsForAdmin({
+    String? subjectId,
+  }) async {
+    try {
+      dynamic query = _supabaseClient
+          .from('home_assignments')
+          .select(_assignmentSelectCols);
+      if (subjectId != null && subjectId.isNotEmpty) {
+        query = query.eq('subject_id', subjectId);
+      }
+      final data = await query.order('order_number', ascending: true);
+      return List<Map<String, dynamic>>.from(data as List);
+    } catch (e) {
+      throw Exception('Failed to fetch home assignments: $e');
+    }
+  }
+
+  /// Returns max(order_number) + 1 for [subjectId], or 1 if the subject has no assignments.
+  Future<int> getNextAssignmentOrderNumber(String subjectId) async {
+    try {
+      final res = await _supabaseClient
+          .from('home_assignments')
+          .select('order_number')
+          .eq('subject_id', subjectId)
+          .order('order_number', ascending: false)
+          .limit(1);
+      if (res.isEmpty) return 1;
+      final maxOrder = res.first['order_number'] as int?;
+      return (maxOrder ?? 0) + 1;
+    } catch (e) {
+      throw Exception('Failed to get next assignment order number: $e');
+    }
+  }
+
+  Future<void> addHomeAssignment(Map<String, dynamic> data) async {
+    try {
+      await _supabaseClient.from('home_assignments').insert(data);
+    } catch (e) {
+      throw Exception('Failed to add home assignment: $e');
+    }
+  }
+
+  Future<void> updateHomeAssignment(String id, Map<String, dynamic> data) async {
+    try {
+      await _supabaseClient.from('home_assignments').update(data).eq('id', id);
+    } catch (e) {
+      throw Exception('Failed to update home assignment: $e');
+    }
+  }
+
+  Future<void> deleteHomeAssignment(String id) async {
+    try {
+      await _supabaseClient.from('home_assignments').delete().eq('id', id);
+    } catch (e) {
+      throw Exception('Failed to delete home assignment: $e');
+    }
+  }
 }

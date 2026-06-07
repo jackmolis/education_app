@@ -413,4 +413,17 @@ class AppLocalizationsFr extends AppLocalizations {
   String modelNumber(int number) {
     return 'Modèle $number';
   }
+
+  @override
+  String get sectionHomeAssignments => 'Devoirs à la Maison';
+
+  @override
+  String get failedToLoadAssignments => 'Échec du chargement des devoirs';
+
+  @override
+  String get noAssignmentsYet => 'Aucun Devoir';
+
+  @override
+  String get assignmentsAppearHere =>
+      'Les devoirs de cette matière apparaîtront ici bientôt.';
 }

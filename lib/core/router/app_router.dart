@@ -43,6 +43,13 @@ import '../../features/courses/presentation/screens/high_levels_screen.dart';
 import '../../features/streams/presentation/screens/streams_screen.dart';
 import '../../features/streams/presentation/screens/stream_selection_screen.dart';
 import '../../features/courses/presentation/screens/option_selection_screen.dart';
+import '../../features/courses/presentation/screens/home_assignments_screen.dart';
+import '../../features/courses/presentation/screens/homework_submission_screen.dart';
+import '../../features/admin/presentation/screens/manage_assignments_screen.dart';
+import '../../features/admin/presentation/screens/add_assignment_screen.dart';
+import '../../features/admin/presentation/screens/manage_submissions_screen.dart';
+import '../../features/admin/presentation/screens/grade_submission_screen.dart';
+import '../../features/courses/domain/models/home_assignment_model.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateChangesProvider);
@@ -408,6 +415,41 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   );
                 },
               ),
+
+              // ── Home Assignments list for a subject ──
+              GoRoute(
+                path: '/levels/:levelId/subjects/:subjectId/assignments',
+                builder: (context, state) {
+                  final levelId = Uri.decodeComponent(state.pathParameters['levelId']!);
+                  final subjectId = Uri.decodeComponent(state.pathParameters['subjectId']!);
+                  final extra = state.extra as Map<String, dynamic>? ?? {};
+                  final levelName = extra['levelName'] as String? ?? '';
+                  final subject = extra['subject'] as SubjectModel?;
+                  return HomeAssignmentsScreen(
+                    key: state.pageKey,
+                    levelId: levelId,
+                    levelName: levelName,
+                    subjectId: subjectId,
+                    subject: subject,
+                  );
+                },
+              ),
+
+              // ── Student submission screen for one assignment ──
+              GoRoute(
+                path: '/levels/:levelId/subjects/:subjectId/assignments/:assignmentId/submit',
+                builder: (context, state) {
+                  final levelId = Uri.decodeComponent(state.pathParameters['levelId']!);
+                  final subjectId = Uri.decodeComponent(state.pathParameters['subjectId']!);
+                  final assignmentId = Uri.decodeComponent(state.pathParameters['assignmentId']!);
+                  return HomeworkSubmissionScreen(
+                    key: state.pageKey,
+                    levelId: levelId,
+                    subjectId: subjectId,
+                    assignmentId: assignmentId,
+                  );
+                },
+              ),
             ],
           ),
 
@@ -526,6 +568,50 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 modelToEdit: modelToEdit,
                 preselectedExam: preselectedExam,
               );
+            },
+          ),
+
+          // ── Assignments ──
+          GoRoute(
+            path: 'manage-assignments',
+            builder: (context, state) =>
+                ManageAssignmentsScreen(key: state.pageKey),
+            routes: [
+              GoRoute(
+                path: ':assignmentId/submissions',
+                builder: (context, state) {
+                  final assignmentId = Uri.decodeComponent(
+                      state.pathParameters['assignmentId']!);
+                  return ManageSubmissionsScreen(
+                    key: state.pageKey,
+                    assignmentId: assignmentId,
+                  );
+                },
+                routes: [
+                  GoRoute(
+                    path: ':submissionId/grade',
+                    builder: (context, state) {
+                      final submissionId = Uri.decodeComponent(
+                          state.pathParameters['submissionId']!);
+                      final data =
+                          state.extra as Map<String, dynamic>? ?? {};
+                      return GradeSubmissionScreen(
+                        key: state.pageKey,
+                        submissionId: submissionId,
+                        submissionData: data,
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+          GoRoute(
+            path: 'add-assignment',
+            builder: (context, state) {
+              final assignment = state.extra as HomeAssignmentModel?;
+              return AddAssignmentScreen(
+                  key: state.pageKey, assignmentToEdit: assignment);
             },
           ),
         ],

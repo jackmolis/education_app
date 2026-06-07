@@ -161,5 +161,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "sectionHomeAssignments": "الفروض المنزلية",
+  "failedToLoadAssignments": "فشل في تحميل الفروض",
+  "noAssignmentsYet": "لا توجد فروض بعد",
+  "assignmentsAppearHere": "ستظهر فروض هذه المادة هنا قريباً."
 }

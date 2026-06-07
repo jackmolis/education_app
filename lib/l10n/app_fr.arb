@@ -161,5 +161,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "sectionHomeAssignments": "Devoirs à la Maison",
+  "failedToLoadAssignments": "Échec du chargement des devoirs",
+  "noAssignmentsYet": "Aucun Devoir",
+  "assignmentsAppearHere": "Les devoirs de cette matière apparaîtront ici bientôt."
 }

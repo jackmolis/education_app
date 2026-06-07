@@ -413,4 +413,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String modelNumber(int number) {
     return 'Model $number';
   }
+
+  @override
+  String get sectionHomeAssignments => 'Home Assignments';
+
+  @override
+  String get failedToLoadAssignments => 'Failed to load assignments';
+
+  @override
+  String get noAssignmentsYet => 'No Assignments Yet';
+
+  @override
+  String get assignmentsAppearHere =>
+      'Assignments for this subject will appear here soon.';
 }

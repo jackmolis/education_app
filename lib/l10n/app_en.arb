@@ -162,6 +162,10 @@
         "type": "int"
       }
     }
-  }
+  },
+  "sectionHomeAssignments": "Home Assignments",
+  "failedToLoadAssignments": "Failed to load assignments",
+  "noAssignmentsYet": "No Assignments Yet",
+  "assignmentsAppearHere": "Assignments for this subject will appear here soon."
 }
 
