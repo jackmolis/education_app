@@ -14,6 +14,14 @@ final subjectsProvider = FutureProvider<List<SubjectModel>>((ref) async {
   return repository.getSubjects();
 });
 
+/// Fetches a single subject by ID — use this instead of [subjectsProvider]
+/// whenever only one subject is needed (avoids loading all 295 rows).
+final subjectByIdProvider =
+    FutureProvider.family.autoDispose<SubjectModel?, String>((ref, subjectId) async {
+  final repository = ref.read(coursesRepositoryProvider);
+  return repository.getSubjectById(subjectId);
+});
+
 class PaginatedLessonsState {
   final List<LessonModel> lessons;
   final bool hasMore;

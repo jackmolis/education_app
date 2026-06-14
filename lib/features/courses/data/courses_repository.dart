@@ -73,6 +73,44 @@ class CoursesRepository {
     }
   }
 
+  Future<SubjectModel?> getSubjectById(String subjectId) async {
+    // Check in-memory cache first — avoids a network round-trip when getSubjects() was already called.
+    if (_cachedSubjects != null) {
+      try {
+        return _cachedSubjects!.firstWhere((s) => s.id == subjectId);
+      } catch (_) {}
+    }
+
+    final offline = await _isOffline();
+    if (offline) {
+      final box = Hive.box('subjects');
+      final cachedData = box.get('all_subjects');
+      if (cachedData != null) {
+        final List<dynamic> decoded = jsonDecode(cachedData);
+        final all = decoded
+            .map<SubjectModel>((json) => SubjectModel.fromJson(json as Map<String, dynamic>))
+            .toList();
+        try {
+          return all.firstWhere((s) => s.id == subjectId);
+        } catch (_) {}
+      }
+      return null;
+    }
+
+    try {
+      final data = await _supabase
+          .from('subjects')
+          .select('id, name_en, name_fr, name_ar, description, image_url, level_id, created_at')
+          .eq('id', subjectId)
+          .maybeSingle();
+      if (data == null) return null;
+      return SubjectModel.fromJson(data as Map<String, dynamic>);
+    } catch (e) {
+      debugPrint('Error fetching subject by id: $e');
+      return null;
+    }
+  }
+
   /// Clears cached lessons for [subjectId] so the next getLessons refetches from Supabase.
   void invalidateLessonsCache(String subjectId) {
     _cachedLessons.remove(subjectId);

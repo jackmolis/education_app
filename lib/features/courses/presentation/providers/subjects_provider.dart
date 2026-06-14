@@ -44,3 +44,110 @@ final subjectsByLevelProvider =
   final repository = ref.read(subjectsRepositoryProvider);
   return repository.getSubjectsByLevel(args.levelId, streamId: args.streamId, optionLang: args.optionLang);
 });
+
+// ─── Paginated subjects ───────────────────────────────────────────────────────
+
+const _kSubjectsPageSize = 20;
+
+class PaginatedSubjectsState {
+  final List<SubjectModel> subjects;
+  final bool isLoading;
+  final bool isLoadingMore;
+  final bool hasMore;
+  final Object? error;
+
+  const PaginatedSubjectsState({
+    this.subjects = const [],
+    this.isLoading = false,
+    this.isLoadingMore = false,
+    this.hasMore = true,
+    this.error,
+  });
+
+  static const _sentinel = Object();
+
+  PaginatedSubjectsState copyWith({
+    List<SubjectModel>? subjects,
+    bool? isLoading,
+    bool? isLoadingMore,
+    bool? hasMore,
+    Object? error = _sentinel,
+  }) {
+    return PaginatedSubjectsState(
+      subjects: subjects ?? this.subjects,
+      isLoading: isLoading ?? this.isLoading,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      hasMore: hasMore ?? this.hasMore,
+      error: identical(error, _sentinel) ? this.error : error,
+    );
+  }
+}
+
+class PaginatedSubjectsNotifier
+    extends StateNotifier<PaginatedSubjectsState> {
+  final SubjectsRepository _repository;
+  final SubjectsQueryArgs _args;
+  int _currentPage = 0;
+
+  PaginatedSubjectsNotifier(this._repository, this._args)
+      : super(const PaginatedSubjectsState()) {
+    _loadInitial();
+  }
+
+  Future<void> _loadInitial() async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      final results = await _repository.getSubjectsByLevelPaginated(
+        _args.levelId,
+        streamId: _args.streamId,
+        optionLang: _args.optionLang,
+        page: 0,
+        pageSize: _kSubjectsPageSize,
+      );
+      _currentPage = 0;
+      state = state.copyWith(
+        subjects: results,
+        isLoading: false,
+        hasMore: results.length == _kSubjectsPageSize,
+      );
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: e);
+    }
+  }
+
+  Future<void> loadMore() async {
+    if (state.isLoadingMore || !state.hasMore || state.isLoading) return;
+    state = state.copyWith(isLoadingMore: true);
+    try {
+      final nextPage = _currentPage + 1;
+      final results = await _repository.getSubjectsByLevelPaginated(
+        _args.levelId,
+        streamId: _args.streamId,
+        optionLang: _args.optionLang,
+        page: nextPage,
+        pageSize: _kSubjectsPageSize,
+      );
+      _currentPage = nextPage;
+      state = state.copyWith(
+        subjects: [...state.subjects, ...results],
+        isLoadingMore: false,
+        hasMore: results.length == _kSubjectsPageSize,
+      );
+    } catch (e) {
+      state = state.copyWith(isLoadingMore: false);
+    }
+  }
+
+  Future<void> refresh() async {
+    _currentPage = 0;
+    await _loadInitial();
+  }
+}
+
+final paginatedSubjectsByLevelProvider = StateNotifierProvider.family
+    .autoDispose<PaginatedSubjectsNotifier, PaginatedSubjectsState, SubjectsQueryArgs>(
+  (ref, args) {
+    final repository = ref.read(subjectsRepositoryProvider);
+    return PaginatedSubjectsNotifier(repository, args);
+  },
+);

@@ -79,20 +79,17 @@ class _ContinueLearningCardState extends ConsumerState<ContinueLearningCard>
     WidgetRef ref,
     VideoProgressModel videoProgress,
   ) {
-    final subjectsAsync = ref.watch(subjectsProvider);
-    return subjectsAsync.when(
-      data: (List<SubjectModel> subjects) {
-        final subject = subjects.firstWhere(
-          (s) => s.id == videoProgress.subjectId,
-          orElse: () => SubjectModel(
-            id: '',
-            nameEn: 'Unknown',
-            nameFr: 'Unknown',
-            nameAr: 'Unknown',
-            level: '',
-            imageUrl: null,
-            description: null,
-          ),
+    final subjectAsync = ref.watch(subjectByIdProvider(videoProgress.subjectId));
+    return subjectAsync.when(
+      data: (SubjectModel? subject) {
+        final resolvedSubject = subject ?? SubjectModel(
+          id: '',
+          nameEn: 'Unknown',
+          nameFr: 'Unknown',
+          nameAr: 'Unknown',
+          level: '',
+          imageUrl: null,
+          description: null,
         );
         final lessonsAsync =
             ref.watch(lessonsProvider(videoProgress.subjectId));
@@ -112,7 +109,7 @@ class _ContinueLearningCardState extends ConsumerState<ContinueLearningCard>
             return _buildCard(
               context,
               lesson: lesson,
-              subjectName: subject.getName(Localizations.localeOf(context).languageCode),
+              subjectName: resolvedSubject.getName(Localizations.localeOf(context).languageCode),
               progress: videoProgress.progressFraction,
               positionSeconds: videoProgress.positionSeconds,
               durationSeconds: videoProgress.durationSeconds,

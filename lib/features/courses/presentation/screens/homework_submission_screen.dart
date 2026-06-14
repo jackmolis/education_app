@@ -1,6 +1,4 @@
-import 'dart:typed_data';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,9 +7,9 @@ import 'package:nexora_academy/core/widgets/shimmer_loaders.dart';
 import 'package:nexora_academy/l10n/app_localizations.dart';
 import '../../../../core/providers/locale_provider.dart';
 import '../../domain/models/home_assignment_model.dart';
-import '../../domain/models/homework_submission_model.dart';
+
 import '../providers/home_assignments_provider.dart';
-import '../providers/homework_provider.dart';
+
 import '../providers/storage_provider.dart';
 
 class HomeworkSubmissionScreen extends ConsumerStatefulWidget {
@@ -33,82 +31,12 @@ class HomeworkSubmissionScreen extends ConsumerStatefulWidget {
 
 class _HomeworkSubmissionScreenState
     extends ConsumerState<HomeworkSubmissionScreen> {
-  Uint8List? _selectedFileBytes;
-  String? _selectedFileName;
-  String? _selectedFileExt;
-  final _notesController = TextEditingController();
-  bool _isSubmitting = false;
-
-  @override
-  void dispose() {
-    _notesController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _pickFile() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],
-      withData: true,
-    );
-    if (result == null || result.files.isEmpty) return;
-    final file = result.files.single;
-    if (file.bytes == null) return;
-    setState(() {
-      _selectedFileBytes = file.bytes;
-      _selectedFileName = file.name;
-      final ext = file.name.contains('.')
-          ? file.name.split('.').last
-          : 'pdf';
-      _selectedFileExt = ext;
-    });
-  }
-
-  Future<void> _submit() async {
-    if (_selectedFileBytes == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a file first.')),
-      );
-      return;
-    }
-
-    setState(() => _isSubmitting = true);
-    try {
-      await ref.read(submitHomeworkControllerProvider.notifier).submit(
-            fileBytes: _selectedFileBytes!,
-            extension: _selectedFileExt ?? 'pdf',
-            assignmentId: widget.assignmentId,
-            notes: _notesController.text.trim(),
-          );
-      if (mounted) {
-        ref.invalidate(studentSubmissionProvider(widget.assignmentId));
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Assignment submitted successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Submission failed: $e')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isSubmitting = false);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     final localeCode = ref.watch(localeProvider).languageCode;
     final assignmentAsync =
         ref.watch(homeAssignmentsProvider(widget.subjectId));
-    final submissionAsync =
-        ref.watch(studentSubmissionProvider(widget.assignmentId));
-
     return AppScaffold(
       backgroundColor: const Color(0xFFF8F9FD),
       body: Column(
@@ -144,16 +72,6 @@ class _HomeworkSubmissionScreenState
                         onOpenPdf: () =>
                             _openPdf(context, assignment, localeCode),
                       ),
-                      const SizedBox(height: 16),
-                      submissionAsync.when(
-                        loading: () => const Padding(
-                          padding: EdgeInsets.all(32),
-                          child: CircularProgressIndicator(),
-                        ),
-                        error: (e, _) => Text('Error: $e'),
-                        data: (submission) =>
-                            _buildSubmissionPanel(submission, loc),
-                      ),
                     ],
                   );
                 },
@@ -162,245 +80,6 @@ class _HomeworkSubmissionScreenState
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildSubmissionPanel(
-      HomeworkSubmissionModel? submission, AppLocalizations loc) {
-    if (submission == null || submission.isPending) {
-      return _buildSubmitForm(submission, loc);
-    }
-
-    return _buildGradedView(submission, loc);
-  }
-
-  Widget _buildSubmitForm(
-      HomeworkSubmissionModel? submission, AppLocalizations loc) {
-    final isEditing = submission != null;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _StatusBadge(
-          status: isEditing ? 'pending' : 'not_submitted',
-          label: isEditing ? 'Submitted - Pending Grade' : 'Not Submitted',
-        ),
-        const SizedBox(height: 16),
-        if (isEditing) ...[
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0F9FF),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFBAE6FD)),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.check_circle_rounded,
-                    color: Color(0xFF0284C7), size: 20),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'You have already submitted a file. Upload again to update your submission.',
-                    style: TextStyle(
-                        fontSize: 13, color: Colors.grey[700], height: 1.4),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-        ],
-        GestureDetector(
-          onTap: _isSubmitting ? null : _pickFile,
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(
-                color: _selectedFileBytes != null
-                    ? const Color(0xFF10B981)
-                    : const Color(0xFFE2E8F0),
-                width: 2,
-                strokeAlign: BorderSide.strokeAlignInside,
-              ),
-            ),
-            child: Column(
-              children: [
-                Icon(
-                  _selectedFileBytes != null
-                      ? Icons.description_rounded
-                      : Icons.upload_file_rounded,
-                  size: 48,
-                  color: _selectedFileBytes != null
-                      ? const Color(0xFF10B981)
-                      : const Color(0xFF6366F1),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  _selectedFileName ?? 'Tap to select PDF or image',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: _selectedFileBytes != null
-                        ? const Color(0xFF1E293B)
-                        : const Color(0xFF64748B),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'PDF, JPG, PNG supported',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[400],
-                      fontWeight: FontWeight.w500),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        TextField(
-          controller: _notesController,
-          maxLines: 3,
-          decoration: InputDecoration(
-            hintText: 'Add a note to your teacher (optional)',
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide:
-                    const BorderSide(color: Color(0xFF6366F1), width: 1.5)),
-          ),
-        ),
-        const SizedBox(height: 20),
-        SizedBox(
-          height: 54,
-          child: FilledButton.icon(
-            onPressed: _isSubmitting ? null : _submit,
-            icon: _isSubmitting
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                        strokeWidth: 2, color: Colors.white))
-                : const Icon(Icons.cloud_upload_rounded),
-            label: Text(
-              _isSubmitting
-                  ? 'Uploading...'
-                  : isEditing
-                      ? 'Update Submission'
-                      : 'Upload & Submit',
-              style: const TextStyle(
-                  fontSize: 16, fontWeight: FontWeight.w700),
-            ),
-            style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFF6366F1),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGradedView(HomeworkSubmissionModel submission,
-      AppLocalizations loc) {
-    // grade is double? — display with one decimal if non-integer
-    final gradeDisplay = submission.grade == null
-        ? '-'
-        : submission.grade! % 1 == 0
-            ? submission.grade!.toInt().toString()
-            : submission.grade!.toStringAsFixed(1);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _StatusBadge(status: 'graded', label: 'Graded'),
-        const SizedBox(height: 16),
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF10B981), Color(0xFF6EE7B7)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(18),
-          ),
-          child: Column(
-            children: [
-              const Text('Your Grade',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600)),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    gradeDisplay,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 48,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 10, left: 4),
-                    child: Text('/ 20',
-                        style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700)),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        if ((submission.feedback ?? '').isNotEmpty) ...[
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFE2E8F0)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Row(children: [
-                  Icon(Icons.feedback_rounded,
-                      size: 18, color: Color(0xFF6366F1)),
-                  SizedBox(width: 8),
-                  Text('Teacher Feedback',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700, fontSize: 14)),
-                ]),
-                const SizedBox(height: 10),
-                Text(submission.feedback!,
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[700],
-                        height: 1.5)),
-              ],
-            ),
-          ),
-        ],
-      ],
     );
   }
 
@@ -531,55 +210,6 @@ class _AssignmentInfoCard extends StatelessWidget {
               ),
             ),
           ],
-        ],
-      ),
-    );
-  }
-}
-
-class _StatusBadge extends StatelessWidget {
-  final String status;
-  final String label;
-
-  const _StatusBadge({required this.status, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    Color bgColor;
-    Color textColor;
-    IconData icon;
-
-    switch (status) {
-      case 'graded':
-        bgColor = const Color(0xFFD1FAE5);
-        textColor = const Color(0xFF065F46);
-        icon = Icons.check_circle_rounded;
-      case 'pending':
-        bgColor = const Color(0xFFFEF3C7);
-        textColor = const Color(0xFF92400E);
-        icon = Icons.schedule_rounded;
-      default:
-        bgColor = const Color(0xFFF1F5F9);
-        textColor = const Color(0xFF475569);
-        icon = Icons.radio_button_unchecked_rounded;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 18, color: textColor),
-          const SizedBox(width: 8),
-          Text(label,
-              style: TextStyle(
-                  color: textColor,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14)),
         ],
       ),
     );

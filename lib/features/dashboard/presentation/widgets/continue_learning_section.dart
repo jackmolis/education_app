@@ -20,20 +20,17 @@ class ContinueLearningSection extends ConsumerWidget {
     return lastWatchedAsync.when(
       data: (videoProgress) {
         if (videoProgress != null) {
-          final subjectsAsync = ref.watch(subjectsProvider);
-          return subjectsAsync.when(
-            data: (subjects) {
-              final subject = subjects.firstWhere(
-                (s) => s.id == videoProgress.subjectId,
-                orElse: () => SubjectModel(
-                  id: '',
-                  nameEn: 'Unknown',
-                  nameFr: 'Unknown',
-                  nameAr: 'Unknown',
-                  level: '',
-                  imageUrl: null,
-                  description: null,
-                ),
+          final subjectAsync = ref.watch(subjectByIdProvider(videoProgress.subjectId));
+          return subjectAsync.when(
+            data: (subject) {
+              final resolvedSubject = subject ?? SubjectModel(
+                id: '',
+                nameEn: 'Unknown',
+                nameFr: 'Unknown',
+                nameAr: 'Unknown',
+                level: '',
+                imageUrl: null,
+                description: null,
               );
               final lessonsAsync = ref.watch(lessonsProvider(videoProgress.subjectId));
               return lessonsAsync.when(
@@ -49,7 +46,7 @@ class ContinueLearningSection extends ConsumerWidget {
                       orderNumber: 0,
                     ),
                   );
-                  return _buildLastWatchedCard(context, videoProgress, lesson, subject.getName(Localizations.localeOf(context).languageCode));
+                  return _buildLastWatchedCard(context, videoProgress, lesson, resolvedSubject.getName(Localizations.localeOf(context).languageCode));
                 },
                 loading: () => _buildShimmer(),
                 error: (error, stack) => _buildFallback(continueAsync),

@@ -47,13 +47,12 @@ class _SubjectDetailsScreenState extends ConsumerState<SubjectDetailsScreen> {
   Widget build(BuildContext context) {
     final lessonsAsync = ref.watch(lessonsProvider(widget.subjectId));
     final completedLessonsAsync = ref.watch(completedLessonIdsProvider);
-    final subjectsAsync = ref.watch(subjectsProvider);
-    
-    final resolvedName = subjectsAsync.maybeWhen(
-      data: (subjects) {
-        final match = subjects.where((s) => s.id == widget.subjectId);
-        return match.isNotEmpty ? match.first.getName(Localizations.localeOf(context).languageCode) : widget.subjectName;
-      },
+    final subjectAsync = ref.watch(subjectByIdProvider(widget.subjectId));
+
+    final resolvedName = subjectAsync.maybeWhen(
+      data: (subject) =>
+          subject?.getName(Localizations.localeOf(context).languageCode) ??
+          widget.subjectName,
       orElse: () => widget.subjectName,
     );
 

@@ -9,7 +9,7 @@ import '../../../../core/providers/locale_provider.dart';
 import 'package:nexora_academy/l10n/app_localizations.dart';
 import '../../data/progress_repository.dart';
 
-class LevelSubjectsScreen extends ConsumerWidget {
+class LevelSubjectsScreen extends ConsumerStatefulWidget {
   final String levelId;
   final String levelName;
   final String? streamId;
@@ -24,8 +24,43 @@ class LevelSubjectsScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final subjectsAsync = ref.watch(subjectsByLevelProvider((levelId: levelId, streamId: streamId, optionLang: optionLang)));
+  ConsumerState<LevelSubjectsScreen> createState() =>
+      _LevelSubjectsScreenState();
+}
+
+class _LevelSubjectsScreenState extends ConsumerState<LevelSubjectsScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  SubjectsQueryArgs get _args => (
+        levelId: widget.levelId,
+        streamId: widget.streamId,
+        optionLang: widget.optionLang,
+      );
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final current = _scrollController.offset;
+    if (current >= maxScroll - 200) {
+      ref.read(paginatedSubjectsByLevelProvider(_args).notifier).loadMore();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(paginatedSubjectsByLevelProvider(_args));
     final locale = ref.watch(localeProvider);
     final loc = AppLocalizations.of(context)!;
 
@@ -36,7 +71,8 @@ class LevelSubjectsScreen extends ConsumerWidget {
         children: [
           // Header
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
             child: Row(
               children: [
                 IconButton(
@@ -45,7 +81,7 @@ class LevelSubjectsScreen extends ConsumerWidget {
                 ),
                 Expanded(
                   child: Text(
-                    levelName,
+                    widget.levelName,
                     style: const TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 20,
@@ -61,95 +97,107 @@ class LevelSubjectsScreen extends ConsumerWidget {
           ),
           // Body
           Expanded(
-            child: subjectsAsync.when(
-              loading: () => const Center(
-                child: CircularProgressIndicator(color: Color(0xFF4A6CF7)),
-              ),
-              error: (error, _) => CustomScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                slivers: [
-                  SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: EmptyStateWidget(
-                      icon: Icons.error_outline,
-                      title: loc.failedToLoadSubjects,
-                      actionLabel: loc.tryAgain,
-                      onAction: () async {
-                        ref.invalidate(subjectsByLevelProvider((levelId: levelId, streamId: streamId, optionLang: optionLang)));
-                        try {
-                          await ref.read(subjectsByLevelProvider((levelId: levelId, streamId: streamId, optionLang: optionLang)).future);
-                        } catch (_) {}
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              data: (subjects) {
-                return RefreshIndicator(
-                  color: const Color(0xFF4A6CF7),
-                  onRefresh: () async {
-                    ref.invalidate(subjectsByLevelProvider((levelId: levelId, streamId: streamId, optionLang: optionLang)));
-                    try {
-                      await ref.read(subjectsByLevelProvider((levelId: levelId, streamId: streamId, optionLang: optionLang)).future);
-                    } catch (_) {}
-                  },
-                  child: subjects.isEmpty
-                      ? CustomScrollView(
-                          physics: const AlwaysScrollableScrollPhysics(
-                            parent: BouncingScrollPhysics(),
-                          ),
-                          slivers: [
-                            SliverFillRemaining(
-                              hasScrollBody: false,
-                              child: EmptyStateWidget(
-                                icon: Icons.library_books_outlined,
-                                title: loc.noSubjectsAvailable,
-                                subtitle: loc.subjectsAppearHere,
-                                actionLabel: loc.refresh,
-                                onAction: () async {
-                                  ref.invalidate(subjectsByLevelProvider((levelId: levelId, streamId: streamId, optionLang: optionLang)));
-                                  try {
-                                    await ref.read(subjectsByLevelProvider((levelId: levelId, streamId: streamId, optionLang: optionLang)).future);
-                                  } catch (_) {}
-                                },
-                              ),
-                            ),
-                          ],
-                        )
-                      : ListView.builder(
-                          physics: const AlwaysScrollableScrollPhysics(
-                            parent: BouncingScrollPhysics(),
-                          ),
-                          padding: const EdgeInsets.fromLTRB(20, 8, 20, 40),
-                          itemCount: subjects.length,
-                          itemBuilder: (context, index) {
-                            final subject = subjects[index];
-                            final localizedName = subject.getName(locale.languageCode);
-
-                            return _SubjectItemCard(
-                              subjectId: subject.id,
-                              name: localizedName,
-                              levelName: levelName,
-                              colorIndex: index,
-                              index: index,
-                              onTap: () {
-                                context.push(
-                                  '/levels/${Uri.encodeComponent(levelId)}/subjects/${Uri.encodeComponent(subject.id)}/sections',
-                                  extra: {
-                                    'levelName': levelName,
-                                    'subject': subject,
-                                  },
-                                );
-                              },
-                            );
-                          },
-                        ),
-                );
-              },
-            ),
+            child: _buildBody(context, state, locale, loc),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildBody(
+    BuildContext context,
+    PaginatedSubjectsState state,
+    dynamic locale,
+    AppLocalizations loc,
+  ) {
+    if (state.isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(color: Color(0xFF4A6CF7)),
+      );
+    }
+
+    if (state.error != null && state.subjects.isEmpty) {
+      return CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: EmptyStateWidget(
+              icon: Icons.error_outline,
+              title: loc.failedToLoadSubjects,
+              actionLabel: loc.tryAgain,
+              onAction: () =>
+                  ref.read(paginatedSubjectsByLevelProvider(_args).notifier).refresh(),
+            ),
+          ),
+        ],
+      );
+    }
+
+    return RefreshIndicator(
+      color: const Color(0xFF4A6CF7),
+      onRefresh: () =>
+          ref.read(paginatedSubjectsByLevelProvider(_args).notifier).refresh(),
+      child: state.subjects.isEmpty
+          ? CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
+              slivers: [
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: EmptyStateWidget(
+                    icon: Icons.library_books_outlined,
+                    title: loc.noSubjectsAvailable,
+                    subtitle: loc.subjectsAppearHere,
+                    actionLabel: loc.refresh,
+                    onAction: () => ref
+                        .read(paginatedSubjectsByLevelProvider(_args).notifier)
+                        .refresh(),
+                  ),
+                ),
+              ],
+            )
+          : ListView.builder(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 40),
+              itemCount:
+                  state.subjects.length + (state.isLoadingMore ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index == state.subjects.length) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                          color: Color(0xFF4A6CF7)),
+                    ),
+                  );
+                }
+
+                final subject = state.subjects[index];
+                final localizedName = subject.getName(locale.languageCode);
+
+                return _SubjectItemCard(
+                  subjectId: subject.id,
+                  name: localizedName,
+                  levelName: widget.levelName,
+                  colorIndex: index,
+                  index: index,
+                  onTap: () {
+                    context.push(
+                      '/levels/${Uri.encodeComponent(widget.levelId)}/subjects/${Uri.encodeComponent(subject.id)}/sections',
+                      extra: {
+                        'levelName': widget.levelName,
+                        'subject': subject,
+                      },
+                    );
+                  },
+                );
+              },
+            ),
     );
   }
 }
@@ -221,7 +269,9 @@ class _SubjectItemCardState extends ConsumerState<_SubjectItemCard>
       ),
     );
 
-    Future.delayed(Duration(milliseconds: widget.index * 80), () {
+    // Cap stagger delay at 20 items to avoid excessive scheduling
+    final staggerIndex = widget.index % 20;
+    Future.delayed(Duration(milliseconds: staggerIndex * 60), () {
       if (mounted) _animController.forward();
     });
   }
@@ -320,7 +370,8 @@ class _SubjectItemCardState extends ConsumerState<_SubjectItemCard>
                                   // LEFT: level
                                   Flexible(
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 2),
                                       decoration: BoxDecoration(
                                         color: const Color(0xFFF1F5F9),
                                         borderRadius: BorderRadius.circular(6),
@@ -396,7 +447,6 @@ class _SubjectItemCardState extends ConsumerState<_SubjectItemCard>
     );
   }
 }
-
 
 /// Extracts the base level name from a compound path string.
 /// "2ème Bac - Sciences Agronomiques" → "2ème Bac"
