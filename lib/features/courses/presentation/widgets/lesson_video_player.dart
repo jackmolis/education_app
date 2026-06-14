@@ -294,9 +294,25 @@ class _LessonVideoPlayerState extends ConsumerState<LessonVideoPlayer> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-    _betterPlayerController?.dispose();
-    _youtubeController?.dispose();
+    // Capture controllers in locals and null the fields NOW, before super.dispose().
+    // Any lingering event-listener callbacks will see null and exit early.
+    final bpc = _betterPlayerController;
+    final ytc = _youtubeController;
+    _betterPlayerController = null;
+    _youtubeController = null;
+
     super.dispose();
+
+    // Defer the heavy ExoPlayer / YouTube codec teardown to after the current
+    // frame is already submitted to the raster thread. On slower devices
+    // (e.g. Xiaomi MediaTek) ExoPlayer.release() can block the Dart/UI thread
+    // for 700–1000ms, which is exactly what causes the post-navigate frame skips.
+    // Deferring via addPostFrameCallback lets the pop-transition first frame
+    // render before codec teardown begins.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      bpc?.dispose();
+      ytc?.dispose();
+    });
   }
 
   // ────────────────────────────────────────────────────────────────────
